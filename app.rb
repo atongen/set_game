@@ -1,5 +1,6 @@
 require 'redis'
 require 'redis/objects'
+require 'json'
 
 Redis.current = Redis.new
 
@@ -38,14 +39,14 @@ get '/' do
   if request.websocket?
     request.websocket do |ws|
       ws.onopen do
-        ws.send("say:Hello World!")
+        ws.send({ 'type' => "say", 'data' => { "msg" => "Hello World!"}}.to_json)
         settings.sockets << ws
       end
       ws.onmessage do |msg|
-        EM.next_tick { settings.sockets.each{ |s| s.send("say:#{msg}") } }
+        EM.next_tick { settings.sockets.each{ |s| s.send({ 'type' => "say", 'data' => { 'msg' => msg }}.to_json) } }
       end
       ws.onclose do
-        warn("say:wetbsocket closed")
+        warn("wetbsocket closed")
         settings.sockets.delete(ws)
       end
     end
@@ -58,6 +59,6 @@ get '/hit/:val' do
   settings.thing.data << params[:val]
   l = settings.thing.data.length
   ave = settings.thing.data.inject(0) { |t,v| t += v.to_i }.to_f / l.to_f
-  settings.sockets.each { |s| s.send("update:#{l},#{ave}") }
+  settings.sockets.each { |s| s.send({'type' => "say", 'data' => { 'msg' => "#{l}:#{ave}" }}.to_json) }
   ""
 end
