@@ -10,6 +10,30 @@
 </head>
 <body>
 <h1>Real-Time</h1>
+<div id="game">
+    <table>
+        <tr>
+            <td id="0"><%= @game.board[0] %></td>
+            <td id="1"><%= @game.board[1] %></td>
+            <td id="2"><%= @game.board[2] %></td>
+        </tr>
+        <tr>
+            <td id="3"><%= @game.board[3] %></td>
+            <td id="4"><%= @game.board[4] %></td>
+            <td id="5"><%= @game.board[5] %></td>
+        </tr>
+        <tr>
+            <td id="6"><%= @game.board[6] %></td>
+            <td id="7"><%= @game.board[7] %></td>
+            <td id="8"><%= @game.board[8] %></td>
+        </tr>
+        <tr>
+            <td id="9"><%= @game.board[9] %></td>
+            <td id="10"><%= @game.board[10] %></td>
+            <td id="11"><%= @game.board[11] %></td>
+        </tr>
+    </table>
+</div>
 <input type="text" id="input" value="" placeholder='say something...' />
 <input type='submit' id="button" value='Submit' />
 <div id="msgs"></div>

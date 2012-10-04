@@ -88,7 +88,7 @@ module Rt
         shape == other.shape
     end
 
-    def set?(c1, c2, c3)
+    def self.set?(c1, c2, c3)
       c1.is_a?(self.class) && c2.is_a?(self.class) && c3.is_a?(self.class) &&
       [:num, :fill, :color, :shape].all? do |attr|
         ((c1.send(attr) == c2.send(attr) && c2.send(attr) == c3.send(attr)) ||

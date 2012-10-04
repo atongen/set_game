@@ -1,11 +1,13 @@
 module Rt
   class Game
 
-    attr_reader :id, :players
+    DECK_SIZE = 12
+    attr_reader :id, :deck, :board, :players
 
     def initialize
       @id = Time.now.to_i.to_s
       @deck = Card.deck.shuffle
+      @board = @deck.pop(DECK_SIZE)
       @players = {}
     end
 
@@ -13,6 +15,8 @@ module Rt
       case msg['type']
       when 'say'
         announce(Msg.say("#{players[ws].name} says '#{msg['data']['msg']}'"))
+      when 'play'
+
       end
     end
 
