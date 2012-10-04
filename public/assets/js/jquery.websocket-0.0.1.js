@@ -39,7 +39,7 @@ $.extend({
 			var m = {type: type};
 			m = $.extend(true, m, $.extend(true, {}, $.websocketSettings.options, m));
 			if (data) m['data'] = data;
-			return this._send($.toJSON(m));
+			return this._send(JSON.stringify(m, null, 2));
 		}
 		$(window).unload(function(){ ws.close(); ws = null });
 		return ws;

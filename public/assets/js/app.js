@@ -3,7 +3,7 @@ $(document).ready(function () {
     var events = {};
 
     events.say = function(e) {
-      console.log(e);
+      //console.log(e);
       $msgs.prepend(e.data.msg + "<br />");
     }
 
@@ -15,5 +15,13 @@ $(document).ready(function () {
         console.log("websocket closed");
       },
       events: events  
+    });
+
+    $('#button').on('click', function(e) {
+      e.preventDefault();
+      var msg = $('#input').val();
+      if ($.trim(msg) != "") {
+        ws.send('say', { msg: msg });
+      }
     });
 });
