@@ -1,11 +1,13 @@
 module Rt
   class Player
+    include Model
+    value :name
+    value :score
 
-    attr_accessor :name, :score
-
-    def initialize(name)
-      @name = name
-      @score = 0
-    end
+    #def initialize(name = nil)
+      #super(nil)
+    #  self.name = name  || "Player ##{id}"
+    #  self.score = 0
+    #end
   end
 end

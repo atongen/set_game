@@ -1,9 +1,9 @@
-#require 'redis'
-#require 'redis/objects'
+require 'redis'
+require 'redis/objects'
 require 'json'
 require 'time'
 
-#Redis.current = Redis.new
+Redis.current = Redis.new
 
 module Rt
   autoload :Model,  "rt/model"

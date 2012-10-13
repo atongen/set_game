@@ -1,11 +1,16 @@
 module Rt
   class Game
+    include Model
+
+    value :password
+    set :player_ids
 
     DECK_SIZE = 12
-    attr_reader :id, :deck, :board, :players
+    attr_reader :deck, :board, :players
 
     def initialize
-      @id = Time.now.to_i.to_s
+      super
+      self.password = SecureRandom.hex(2)
       @deck = Card.deck.shuffle
       @board = @deck.pop(DECK_SIZE)
       @players = {}
@@ -24,9 +29,9 @@ module Rt
       players.keys.each { |ws| ws.send(msg) }
     end
 
-    def add_player(ws)
-      n = players.length + 1
-      players[ws] = Player.new("Player ##{n}")
+    def add_player(player, ws)
+      player_ids << player.id
+      players[ws] = player
     end
 
     def remove_player(ws)

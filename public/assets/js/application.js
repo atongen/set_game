@@ -1,3 +1,18 @@
+define([
+
+],
+    function() {
+        var my = {};
+
+        my.init = function() {
+            console.log("hello");
+        };
+
+        return my;
+    }
+);
+
+/*
 $(document).ready(function () {
     var $msgs = $('#msgs');
     var events = {};
@@ -43,3 +58,4 @@ $(document).ready(function () {
         }(i))
     }
 });
+*/

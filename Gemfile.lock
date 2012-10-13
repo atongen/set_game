@@ -11,6 +11,9 @@ GEM
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
+    redis (3.0.2)
+    redis-objects (0.5.3)
+      redis (>= 2.1.1)
     sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
@@ -30,6 +33,8 @@ PLATFORMS
 
 DEPENDENCIES
   json
+  redis
+  redis-objects
   sinatra
   sinatra-websocket
   thin
