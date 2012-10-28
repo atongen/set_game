@@ -3,6 +3,10 @@ define([
     function() {
         var my = {};
 
+        my.bootstrap = function() {
+            // do stuff here prior to domReady
+        };
+
         my.init = function() {
             console.log("hello");
         };
