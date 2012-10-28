@@ -4,7 +4,7 @@ module Rt
       klass.class_eval do
         include Redis::Objects
         attr_reader :id
-        counter :id_sequence
+        counter :id_sequence, :global => true
       end
 
       klass.extend ClassMethods
@@ -21,7 +21,6 @@ module Rt
         @id = id
       else
         id_sequence.increment do |id_seq|
-          puts id_seq.inspect
           @id = id_seq
         end
       end

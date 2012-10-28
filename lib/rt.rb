@@ -2,8 +2,16 @@ require 'redis'
 require 'redis/objects'
 require 'json'
 require 'time'
+require 'yaml'
 
-Redis.current = Redis.new
+config_path = RT_ROOT.join('config', 'rt.yml')
+if File.file?(config_path)
+  CONFIG = YAML.load(File.read(config_path))
+else
+  raise "Config missing."
+end
+
+Redis.current = Redis.new(CONFIG['redis'])
 
 module Rt
   autoload :Model,  "rt/model"

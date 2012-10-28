@@ -1,35 +1,34 @@
-$:.unshift(File.expand_path("../lib", __FILE__))
+require 'pathname'
+RT_ROOT = Pathname.new(File.expand_path('..', __FILE__))
+$:.unshift(RT_ROOT.join('lib'))
 
 require 'rt'
-
 require 'sinatra'
 require 'sinatra-websocket'
 
 set :server, 'thin'
-
 enable :sessions
-
 GAMES = {}
 
 helpers do
-  def get_player
-    unless @player
-      if session[:player_id]
-        @player = Rt::Player.find_by_id(session[:player_id])
-        @player.name = "wow"
-        @placer.score = 0
-      else
-        @player = Rt::Player.new
-        session[:player_id] = @player.id
-      end
-    end
-    @player
-  end
+  #def get_player
+  #  unless @player
+  #    if session[:player_id]
+  #      @player = Rt::Player.find_by_id(session[:player_id])
+  #      @player.name = "wow"
+  #      @placer.score = 0
+  #    else
+  #      @player = Rt::Player.new
+  #      session[:player_id] = @player.id
+  #    end
+  #  end
+  #  @player
+  #end
 end
 
 get '/' do
   erb :index
-  get_player
+  #get_player
 end
 
 post '/' do
@@ -39,14 +38,15 @@ post '/' do
 end
 
 get '/:id' do
-  get_player
-  if GAMES.has_key?(params[:id])
+  #get_player
+  if GAMES.has_key?(params[:id].to_i)
     if request.websocket?
-      game = GAMES[params[:id]]
+      game = GAMES[params[:id].to_i]
       request.websocket do |ws|
         ws.onopen do
-          player = game.add_player(@player, ws)
-          game.announce(Rt::Msg.say("#{player.name} joined game."))
+          #player = game.add_player(@player, ws)
+          game.add_player(ws)
+          game.announce(Rt::Msg.say("Player joined game."))
         end
         ws.onmessage do |msg|
           EM.next_tick do
@@ -55,11 +55,11 @@ get '/:id' do
         end
         ws.onclose do
           game.remove_player(ws)
-          game.announce(Rt::Msg.say("#{@player.name} left game."))
+          game.announce(Rt::Msg.say("Player left game."))
         end
       end
     else
-      @game = GAMES[params[:id]]
+      @game = GAMES[params[:id].to_i]
       erb :show
     end
   else

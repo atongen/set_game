@@ -1,5 +1,4 @@
 define([
-
 ],
     function() {
         var my = {};

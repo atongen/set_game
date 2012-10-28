@@ -1,14 +1,19 @@
 module Rt
   class Card
 
+    attr_reader :i, :num, :fill, :color, :shape
+
     NUM   = %w{ one    two      three  }
     FILL  = %w{ open   shaded   solid  }
     COLOR = %w{ red    blue     yellow }
     SHAPE = %w{ circle triangle square }
 
-    attr_reader :num, :fill, :color, :shape
-
-    def initialize(num, fill, color, shape)
+    def initialize(i, num, fill, color, shape)
+      if (0...81).include?(i)
+        @i = i
+      else
+        raise "Invalid i"
+      end
       if NUM.include?(num)
         @num = num
       else
@@ -31,28 +36,26 @@ module Rt
       end
     end
 
+    def self.from_i(i)
+      v = i.to_s(3).rjust(4, "0").split("").map(&:to_i)
+      new(i, NUM[v[0]], FILL[v[1]], COLOR[v[2]], SHAPE[v[3]])
+    end
+
+    private_class_method :new, :from_i
+
+    DECK = (0...81).map { |i| from_i(i) }
+
+    def self.from_attr(num, fill, color, shape)
+      DECK["#{NUM.index(num)}#{FILL.index(fill)}#{COLOR.index(color)}#{SHAPE.index(shape)}".to_i(3)]
+    end
+
     def to_s
       "#{num} #{fill} #{color} #{shape}"
     end
 
-    def to_i
-      "#{NUM.index(num)}#{FILL.index(fill)}#{COLOR.index(color)}#{SHAPE.index(shape)}".to_i(3)
-    end
-
-    def self.deck
-      (0...(3 ** 4)).inject([]) do |deck,i|
-        deck << from_i(i)
-        deck
-      end
-    end
-
-    def self.from_i(i)
-      v = i.to_s(3).rjust(4, "0").split("").map(&:to_i)
-      new(NUM[v[0]], FILL[v[1]], COLOR[v[2]], SHAPE[v[3]])
-    end
-
-    def self.from_attr(num, fill, color, shape)
-      from_i("#{NUM.index(num)}#{FILL.index(fill)}#{COLOR.index(color)}#{SHAPE.index(shape)}".to_i(3))
+    def inspect
+      oid = '%x' % (object_id << 1)
+      "<#{self.class.name}:0x#{oid} i:#{i} num:#{num} fill:#{fill} color:#{color} shape:#{shape}>"
     end
 
     def num_i
