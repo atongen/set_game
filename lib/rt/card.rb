@@ -92,11 +92,36 @@ module Rt
     end
 
     def self.set?(c1, c2, c3)
-      c1.is_a?(self.class) && c2.is_a?(self.class) && c3.is_a?(self.class) &&
       [:num, :fill, :color, :shape].all? do |attr|
         ((c1.send(attr) == c2.send(attr) && c2.send(attr) == c3.send(attr)) ||
          (c1.send(attr) != c2.send(attr) && c2.send(attr) != c3.send(attr) && c1.send(attr) != c3.send(attr)))
       end
+    end
+
+    def self.set_idx?(i1, i2, i3)
+      set?(*[i1, i2, i3].map { |i| DECK[i] })
+    end
+
+    # find first set
+    def self.find_set(*cards)
+      l = cards.length
+      if cards.length >= 3
+        (0..(l-3)).each_with_index do |i,i_idx|
+          (1..(l-2)).each_with_index do |j,j_idx|
+            (2..(l-1)).each_with_index do |k,k_idx|
+              if set?(*[i, j, k].map { |c| DECK[c] })
+                return [i_idx, j_idx, k_idx]
+              end
+            end
+          end
+        end
+      else
+        nil
+      end
+    end
+
+    def self.find_all_sets(*cards)
+
     end
   end
 end
