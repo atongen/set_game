@@ -3,12 +3,12 @@ module Rt
     include Model
 
     value :password
-    #set :players
     list :deck
     list :board
+    set :player_ids
     #list :comments, :marshal => true
 
-    attr_accessor :web_sockets
+    attr_reader :players
 
     DECK_SIZE = 12
 
@@ -17,7 +17,7 @@ module Rt
       self.password = (rand(8999) + 1000).to_s
       (0...81).to_a.shuffle.each { |i| deck << i }
       DECK_SIZE.times { board << deck.pop }
-      self.web_sockets = []
+      self.players = {} 
     end
 
     def handle(ws, msg)
@@ -30,16 +30,22 @@ module Rt
     end
 
     def announce(msg)
-      web_sockets.each { |ws| ws.send(msg) }
+      players.keys.each { |ws| ws.send(msg) }
     end
 
-    def add_player(ws)
-      #player_ids << player.id
-      web_sockets << ws
+    def add_player(ws, player)
+      player_ids << player.id
+      players[ws] = player
+      announce("#{player.name} joined game")
+      player
     end
 
     def remove_player(ws)
-      web_sockets.delete(ws)
+      player = players[ws]
+      player_ids.delete(player.id)
+      players.delete(player)
+      announce("#{player.name} left game")
+      ws
     end
   end
 end

@@ -9,21 +9,22 @@ require 'sinatra-websocket'
 set :server, 'thin'
 enable :sessions
 GAMES = {}
+PLAYERS = {}
 
 helpers do
-  #def get_player
-  #  unless @player
-  #    if session[:player_id]
-  #      @player = Rt::Player.find_by_id(session[:player_id])
-  #      @player.name = "wow"
-  #      @placer.score = 0
-  #    else
-  #      @player = Rt::Player.new
-  #      session[:player_id] = @player.id
-  #    end
-  #  end
-  #  @player
-  #end
+  def get_player
+    if session[:player_id]
+      if PLAYERS.has_key?(session[:player_id])
+        PLAYERS[session[:player_id]]
+      else
+        PLAYERS[session[:player_id]] = Rt::Player.find_by_id(session[:player_id])
+      end
+    else
+      player = Rt::Player.new
+      session[:player_id] = player.id
+      PLAYERS[player.id] = player
+    end
+  end
 end
 
 get '/' do
@@ -38,31 +39,41 @@ post '/' do
 end
 
 get '/:id' do
-  #get_player
-  if GAMES.has_key?(params[:id].to_i)
-    if request.websocket?
-      game = GAMES[params[:id].to_i]
-      request.websocket do |ws|
-        ws.onopen do
-          #player = game.add_player(@player, ws)
-          game.add_player(ws)
-          game.announce(Rt::Msg.say("Player joined game."))
-        end
-        ws.onmessage do |msg|
-          EM.next_tick do
-            game.handle(ws, Rt::Msg.parse(msg))
-          end
-        end
-        ws.onclose do
-          game.remove_player(ws)
-          game.announce(Rt::Msg.say("Player left game."))
+  if GAMES.has_key?(params[:id].to_i
+    @game = GAMES[params[:id].to_i]
+    #if (player = get_player) && (@game.player_ids.include?(player.id))
+      @player = get_player
+      erb :show
+    #else
+    #  redirect to("/#{params[:id]}/login")
+    #end
+  else
+    redirect to('/')
+  end
+end
+
+get '/:id/ws' do
+  if request.websocket? && (game = GAMES[params[:id].to_i]) && (player = get_player)
+    request.websocket do |ws|
+      ws.onopen do
+        player.add_game(ws, game)
+        game.add_player(ws, game)
+      end
+      ws.onmessage do |msg|
+        EM.next_tick do
+          game.handle(ws, Rt::Msg.parse(msg))
         end
       end
-    else
-      @game = GAMES[params[:id].to_i]
-      erb :show
+      ws.onclose do
+        game.remove_player(ws)
+        player.remove_game(ws)
+      end
     end
   else
     redirect to('/')
   end
+end
+
+get '/:id/login' do
+
 end

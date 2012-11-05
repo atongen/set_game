@@ -104,20 +104,20 @@ module Rt
 
     # find first set
     def self.find_set(*cards)
+      sets = []
       l = cards.length
       if cards.length >= 3
-        (0..(l-3)).each_with_index do |i,i_idx|
-          (1..(l-2)).each_with_index do |j,j_idx|
-            (2..(l-1)).each_with_index do |k,k_idx|
-              if set?(*[i, j, k].map { |c| DECK[c] })
-                return [i_idx, j_idx, k_idx]
+        (0..(l-3)).each do |i|
+          (1..(l-2)).each do |j|
+            (2..(l-1)).each do |k|
+              if set?(cards[i], cards[j], cards[k])
+                sets << [cards[i], cards[j], cards[k]]
               end
             end
           end
         end
-      else
-        nil
       end
+      sets
     end
 
     def self.find_all_sets(*cards)
