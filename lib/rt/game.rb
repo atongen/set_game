@@ -6,18 +6,22 @@ module Rt
     list :deck
     list :board
     set :player_ids
-    #list :comments, :marshal => true
+    list :comments
 
-    attr_reader :players
+    attr_accessor :players
 
     DECK_SIZE = 12
 
-    def initialize
+    def initialize(id = nil)
       super
-      self.password = (rand(8999) + 1000).to_s
-      (0...81).to_a.shuffle.each { |i| deck << i }
-      DECK_SIZE.times { board << deck.pop }
-      self.players = {} 
+      if !password
+        self.password = (rand(8999) + 1000).to_s
+      end
+      if deck.length == 0
+        (0...81).to_a.shuffle.each { |i| deck << i }
+        DECK_SIZE.times { board << deck.pop }
+      end
+      self.players = {}
     end
 
     def handle(ws, msg)

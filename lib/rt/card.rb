@@ -45,6 +45,16 @@ module Rt
 
     DECK = (0...81).map { |i| from_i(i) }
 
+    def self.each
+      DECK.each { yield }
+    end
+
+    def <=>(other)
+      i <=> other.i
+    end
+
+    include Enumerable
+
     def self.from_attr(num, fill, color, shape)
       DECK["#{NUM.index(num)}#{FILL.index(fill)}#{COLOR.index(color)}#{SHAPE.index(shape)}".to_i(3)]
     end
@@ -98,12 +108,7 @@ module Rt
       end
     end
 
-    def self.set_idx?(i1, i2, i3)
-      set?(*[i1, i2, i3].map { |i| DECK[i] })
-    end
-
-    # find first set
-    def self.find_set(*cards)
+    def self.find_sets(cards)
       sets = []
       l = cards.length
       if cards.length >= 3
@@ -118,10 +123,6 @@ module Rt
         end
       end
       sets
-    end
-
-    def self.find_all_sets(*cards)
-
     end
   end
 end

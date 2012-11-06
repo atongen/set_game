@@ -1,6 +1,8 @@
 define([
+    'jquery',
+    'underscore'
 ],
-    function() {
+    function($, _) {
         var my = {};
 
         my.bootstrap = function() {
@@ -9,6 +11,11 @@ define([
 
         my.init = function() {
             console.log("hello");
+            console.log($('.game'));
+            var game_id = $('.game').attr('data-game-id');
+            if (game_id) {
+              console.log("game: " + game_id);
+            }
         };
 
         return my;

@@ -17,7 +17,7 @@ helpers do
       if PLAYERS.has_key?(session[:player_id])
         PLAYERS[session[:player_id]]
       else
-        PLAYERS[session[:player_id]] = Rt::Player.find_by_id(session[:player_id])
+        PLAYERS[session[:player_id]] = Rt::Player.find(session[:player_id])
       end
     else
       player = Rt::Player.new
@@ -28,25 +28,26 @@ helpers do
 end
 
 get '/' do
+  get_player
   erb :index
-  #get_player
 end
 
 post '/' do
   game = Rt::Game.new
   GAMES[game.id] = game
+  game.player_ids << get_player.id
   redirect to("/#{game.id}")
 end
 
 get '/:id' do
-  if GAMES.has_key?(params[:id].to_i
+  if GAMES.has_key?(params[:id].to_i)
     @game = GAMES[params[:id].to_i]
-    #if (player = get_player) && (@game.player_ids.include?(player.id))
+    if (player = get_player) && (@game.player_ids.include?(player.id))
       @player = get_player
       erb :show
-    #else
-    #  redirect to("/#{params[:id]}/login")
-    #end
+    else
+      redirect to("/#{params[:id]}/login")
+    end
   else
     redirect to('/')
   end
@@ -75,5 +76,19 @@ get '/:id/ws' do
 end
 
 get '/:id/login' do
+  get_player
+  erb :login
+end
 
+post '/:id/login' do
+  if (game = GAMES[params[:id].to_i]) && (player = get_player)
+    if game.password == params[:password]
+      game.player_ids << player.id
+      redirect to("/#{game.id}")
+    else
+      erb :login
+    end
+  else
+    redirect to('/')
+  end
 end
