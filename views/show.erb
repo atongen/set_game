@@ -9,7 +9,7 @@
     </div><!--/.well -->
     <div class="input-append">
       <input class="span2" id="appendedInputButton" type="text">
-      <button class="btn" type="button">Go!</button>
+      <button class="btn" id="say" type="button">Say!</button>
     </div>
   </div><!--/span-->
   <div class="span9">
@@ -17,7 +17,10 @@
       <h1>Hello, world!</h1>
       <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
       <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-      <div class="game" data-game-id="<%= @game.id %>">My game.</div>
+      <div class="game" data-game-id="<%= @game.id %>">
+        Game #<%= @game.id %><br />
+        Password: <%= @game.password.value %>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span4">

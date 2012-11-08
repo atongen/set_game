@@ -6,7 +6,10 @@ module Rt
 
     def initialize(id = nil)
       super
-      self.name ||= "Player ##{id}"
+      if self.name.value.to_s.strip == ""
+        self.name.value = "Player ##{@id}"
+      end
+      self.games = {}
     end
 
     def announce(msg)
@@ -14,12 +17,11 @@ module Rt
     end
 
     def add_game(ws, game)
-      games[ws] = game
-      games
+      self.games[ws] = game
     end
 
     def remove_game(ws)
-      games.delete(ws)
+      self.games.delete(ws)
     end
   end
 end

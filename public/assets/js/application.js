@@ -1,6 +1,7 @@
 define([
     'jquery',
-    'underscore'
+    'underscore',
+    'websocket'
 ],
     function($, _) {
         var my = {};
@@ -10,13 +11,40 @@ define([
         };
 
         my.init = function() {
-            console.log("hello");
-            console.log($('.game'));
             var game_id = $('.game').attr('data-game-id');
             if (game_id) {
               console.log("game: " + game_id);
+
+              var $comments = $('.comments');
+              var events = {};
+
+              events.say = function(e) {
+                $comments.append(e.data.msg + "<br />");
+              };
+
+              var ws_path = 'ws://' + window.location.host + window.location.pathname + '/ws';
+              //console.log(ws_path);
+              var ws = $.websocket(ws_path, {
+                open: function() {
+                  console.log("websocket opened");
+                },
+                close: function() {
+                  console.log("websocket closed");
+                },
+                events: events
+              });
+
+              $('#say').on('click', function(e) {
+                e.preventDefault();
+                var msg = $('#appendedInputButton').val();
+                if ($.trim(msg) != "") {
+                  ws.send('say', { msg: msg });
+                }
+              });
             }
         };
+
+
 
         return my;
     }

@@ -8,6 +8,7 @@ require 'sinatra-websocket'
 
 set :server, 'thin'
 enable :sessions
+set :protection, except: :session_hijacking
 GAMES = {}
 PLAYERS = {}
 
@@ -25,6 +26,16 @@ helpers do
       PLAYERS[player.id] = player
     end
   end
+
+  def get_game
+    if params[:id]
+      if GAMES.has_key?(params[:id].to_i)
+        GAMES[params[:id].to_i]
+      elsif game = Rt::Game.find(params[:id].to_i)
+        GAMES[game.id] = game
+      end
+    end
+  end
 end
 
 get '/' do
@@ -40,8 +51,7 @@ post '/' do
 end
 
 get '/:id' do
-  if GAMES.has_key?(params[:id].to_i)
-    @game = GAMES[params[:id].to_i]
+  if @game = get_game
     if (player = get_player) && (@game.player_ids.include?(player.id))
       @player = get_player
       erb :show
@@ -54,11 +64,11 @@ get '/:id' do
 end
 
 get '/:id/ws' do
-  if request.websocket? && (game = GAMES[params[:id].to_i]) && (player = get_player)
+  if request.websocket? && (game = get_game) && (player = get_player)
     request.websocket do |ws|
       ws.onopen do
         player.add_game(ws, game)
-        game.add_player(ws, game)
+        game.add_player(ws, player)
       end
       ws.onmessage do |msg|
         EM.next_tick do
@@ -76,15 +86,16 @@ get '/:id/ws' do
 end
 
 get '/:id/login' do
-  get_player
+  @player = get_player
+  @game = get_game
   erb :login
 end
 
 post '/:id/login' do
-  if (game = GAMES[params[:id].to_i]) && (player = get_player)
-    if game.password == params[:password]
-      game.player_ids << player.id
-      redirect to("/#{game.id}")
+  if (@game = get_game) && (@player = get_player)
+    if @game.password.value == params[:password]
+      @game.player_ids << @player.id
+      redirect to("/#{@game.id}")
     else
       erb :login
     end

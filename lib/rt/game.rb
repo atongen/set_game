@@ -14,8 +14,8 @@ module Rt
 
     def initialize(id = nil)
       super
-      if !password
-        self.password = (rand(8999) + 1000).to_s
+      if self.password.value.to_s.strip == ""
+        self.password.value = (rand(8999) + 1000).to_s
       end
       if deck.length == 0
         (0...81).to_a.shuffle.each { |i| deck << i }
@@ -25,22 +25,25 @@ module Rt
     end
 
     def handle(ws, msg)
+      player = players[ws]
       case msg['type']
       when 'say'
-        announce(Msg.say("Player says '#{msg['data']['msg']}'"))
+        announce("#{player.name.value} says '#{msg['data']['msg']}'")
       when 'play'
 
       end
     end
 
     def announce(msg)
-      players.keys.each { |ws| ws.send(msg) }
+      self.comments << msg
+      obj = Msg.say(msg)
+      players.keys.each { |ws| ws.send(obj) }
     end
 
     def add_player(ws, player)
-      player_ids << player.id
-      players[ws] = player
-      announce("#{player.name} joined game")
+      self.player_ids << player.id
+      self.players[ws] = player
+      announce("#{player.name.value} joined game")
       player
     end
 
