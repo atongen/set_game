@@ -14,13 +14,18 @@ PLAYERS = {}
 
 helpers do
   def get_player
+    puts 'r1'
     if session[:player_id]
+      puts 'r2'
       if PLAYERS.has_key?(session[:player_id])
+        puts 'r3'
         PLAYERS[session[:player_id]]
       else
+        puts 'r4'
         PLAYERS[session[:player_id]] = Rt::Player.find(session[:player_id])
       end
     else
+      puts 'r5'
       player = Rt::Player.new
       session[:player_id] = player.id
       PLAYERS[player.id] = player
@@ -43,27 +48,36 @@ get '/' do
   erb :index
 end
 
-post '/' do
+post '/games' do
+  puts 'a'
   game = Rt::Game.new
+  puts 'b'
   GAMES[game.id] = game
+  puts 'c'
   game.player_ids << get_player.id
-  redirect to("/#{game.id}")
+  puts 'd'
+  redirect to("/games/#{game.id}")
 end
 
-get '/:id' do
+get '/games/:id' do
+  puts 'z1'
   if @game = get_game
+    puts 'z2'
     if (player = get_player) && (@game.player_ids.include?(player.id))
+      puts 'z3'
       @player = get_player
       erb :show
     else
-      redirect to("/#{params[:id]}/login")
+      puts 'z4'
+      redirect to("/games/#{params[:id]}/login")
     end
   else
+    puts 'z5'
     redirect to('/')
   end
 end
 
-get '/:id/ws' do
+get '/games/:id/ws' do
   if request.websocket? && (game = get_game) && (player = get_player)
     request.websocket do |ws|
       ws.onopen do
@@ -85,17 +99,17 @@ get '/:id/ws' do
   end
 end
 
-get '/:id/login' do
+get '/games/:id/login' do
   @player = get_player
   @game = get_game
   erb :login
 end
 
-post '/:id/login' do
+post '/games/:id/login' do
   if (@game = get_game) && (@player = get_player)
     if @game.password.value == params[:password]
       @game.player_ids << @player.id
-      redirect to("/#{@game.id}")
+      redirect to("/games/#{@game.id}")
     else
       erb :login
     end

@@ -41,6 +41,12 @@ define([
                   ws.send('say', { msg: msg });
                 }
               });
+
+              $('#test').on('click', function(e) {
+                e.preventDefault();
+                ws.send('move', { stuff: "1:3:6:3:3" });
+                console.log("it was sent...");
+              });
             }
         };
 
