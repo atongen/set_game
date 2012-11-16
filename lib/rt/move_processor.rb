@@ -10,11 +10,8 @@ module Rt
 
     def process
       begin
-        puts 'about to block'
-        queue, msg = Redis.current.blpop(["game:#{game_id}:moves"], 1)
-        #sleep 1
-        #msg = rand(1000).to_s
-        puts 'just got done blocking'
+        queue, msg = $redis.blpop(["game:#{game_id}:moves"], 0)
+
         if msg
           # let's process the next message!
           puts "game:#{game_id} msg = #{msg}"

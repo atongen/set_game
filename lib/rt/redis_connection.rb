@@ -1,6 +1,7 @@
 require 'connection_pool'
 require 'redis'
 require 'redis/namespace'
+require 'redis/objects'
 
 module Rt
   class RedisConnection
@@ -8,7 +9,7 @@ module Rt
       url = options[:url] || determine_redis_provider || 'redis://localhost:6379/0'
       driver = options[:driver] || 'ruby'
       # need a connection for Fetcher and Retry
-      size = options[:size] || (Sidekiq.server? ? (Sidekiq.options[:concurrency] + 2) : 5)
+      size = options[:size] || 5
 
       ConnectionPool.new(:timeout => 1, :size => size) do
         build_client(url, options[:namespace], driver)
