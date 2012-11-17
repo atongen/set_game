@@ -44,7 +44,7 @@ define([
 
               $('#test').on('click', function(e) {
                 e.preventDefault();
-                ws.send('move', { stuff: "1:3:6:3:3" });
+                ws.send('move', "1:3:6:3:3" );
                 console.log("it was sent...");
               });
             }

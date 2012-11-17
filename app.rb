@@ -2,6 +2,9 @@ require 'pathname'
 RT_ROOT = Pathname.new(File.expand_path('..', __FILE__))
 $:.unshift(RT_ROOT.join('lib'))
 
+GAMES = {}
+PLAYERS = {}
+
 require 'rt'
 require 'sinatra'
 require 'sinatra-websocket'
@@ -9,8 +12,6 @@ require 'sinatra-websocket'
 set :server, 'thin'
 enable :sessions
 set :protection, except: :session_hijacking
-GAMES = {}
-PLAYERS = {}
 
 helpers do
   def get_player

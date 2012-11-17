@@ -14,36 +14,23 @@ module Rt
     list :board
     set :player_ids
     list :comments
-    list :moves
 
     attr_accessor :players, :move_processor
 
     DECK_SIZE = 12
 
     def initialize(id = nil)
-      puts caller.inspect
-      puts 1
       super
-      puts 2
-      puts self.id
+
       if self.state.value.blank?
-        puts 3
         self.password.value = (rand(8999) + 1000).to_s
         (0...81).to_a.shuffle.each { |i| deck << i }
         DECK_SIZE.times { board << deck.pop }
         self.state.value = 'new'
       end
 
-      puts 4
       # ws can't be stored in redis...
       self.players = {}
-
-      puts 5
-      # process the game moves on a new thread
-      self.move_processor = MoveProcessor.new(self.id)
-      puts 6
-      move_processor.async.process
-      puts 7
     end
 
     def handle(ws, msg)
@@ -52,7 +39,7 @@ module Rt
       when 'say'
         announce("#{player.name.value} says '#{msg['data']['msg']}'")
       when 'move'
-        self.moves << msg['data']
+        $redis.lpush "game-moves", "#{id}:#{player.id}:" + msg['data']
       #when 'start'
         # do starting here
       else
@@ -64,6 +51,12 @@ module Rt
       self.comments << msg
       obj = Msg.say(msg)
       players.keys.each { |ws| ws.send(obj) }
+    end
+
+    def handle_move(player_id, move)
+      if player = players.values.detect { |p| p.id == player_id }
+        announce "#{player.name.value} moved: " + move.inspect
+      end
     end
 
     def add_player(ws, player)
