@@ -7,11 +7,11 @@ module Rt
         queue, msg = $redis.brpop(["game-moves"], 0)
 
         if msg
-          args = msg.split(":")
-          game_id = args.first.to_i
+          args = msg.split(":").map(&:to_i)
+          game_id = args.first
           if game = GAMES[game_id]
-            player_id = args[1].to_i
-            game.handle_move(player_id, args[2..-1])
+            player_id = args[1]
+            game.handle_move(player_id, *args[2..-1])
           end
         end
 

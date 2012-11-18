@@ -2,12 +2,12 @@ module Rt
   module Msg
     class << self
 
-      def say(msg)
-        build('say', { 'msg' => msg })
-      end
-
       def method_missing(sym, *args, &block)
-        { 'type' => sym, 'data' => args[0]}.to_json
+        if args.length == 1 && !block_given?
+          build(sym, args[0])
+        else
+          super
+        end
       end
 
       def parse(str)

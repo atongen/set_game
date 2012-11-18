@@ -101,6 +101,10 @@ module Rt
         shape == other.shape
     end
 
+    def self.set_index?(i1, i2, i3)
+      set?(*DECK.values_at(i1, i2, i3))
+    end
+
     def self.set?(c1, c2, c3)
       [:num, :fill, :color, :shape].all? do |attr|
         ((c1.send(attr) == c2.send(attr) && c2.send(attr) == c3.send(attr)) ||
@@ -108,7 +112,8 @@ module Rt
       end
     end
 
-    def self.find_sets(cards)
+    def self.find_sets(*indexes)
+      cards = DECK.values_at(*indexes)
       sets = []
       l = cards.length
       if cards.length >= 3

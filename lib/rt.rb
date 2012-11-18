@@ -1,6 +1,11 @@
+require 'pathname'
+RT_ROOT = Pathname.new(File.expand_path('../..', __FILE__))
+$:.unshift(RT_ROOT.join('lib'))
+
 require 'json'
 require 'time'
 require 'yaml'
+require 'thread'
 require 'celluloid'
 
 require 'active_support/lazy_load_hooks'
@@ -18,6 +23,3 @@ module Rt
 end
 
 $redis = Rt::PoolWrapper.new
-Rt::MoveProcessorGroup.run!
-Celluloid::Actor[:move_processor_pool].process!
-

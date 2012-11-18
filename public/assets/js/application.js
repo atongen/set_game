@@ -16,11 +16,17 @@ define([
               console.log("game: " + game_id);
 
               var $comments = $('.comments');
+              var $board = $('#board');
               var events = {};
 
               events.say = function(e) {
-                $comments.append(e.data.msg + "<br />");
+                console.log(e)
+                $comments.append(e.data + "<br />");
               };
+
+              events.board = function(e) {
+                $board.text(e.data);
+              }
 
               var ws_path = 'ws://' + window.location.host + window.location.pathname + '/ws';
               //console.log(ws_path);
@@ -36,16 +42,24 @@ define([
 
               $('#say').on('click', function(e) {
                 e.preventDefault();
-                var msg = $('#appendedInputButton').val();
+                var $el = $('#appendedInputButton');
+                var msg = $el.val();
                 if ($.trim(msg) != "") {
-                  ws.send('say', { msg: msg });
+                  ws.send('say', msg);
+                  $el.val("");
                 }
               });
 
               $('#test').on('click', function(e) {
                 e.preventDefault();
-                ws.send('move', "1:3:6:3:3" );
-                console.log("it was sent...");
+                ws.send('move', "1:3:6:3:3:18");
+              });
+
+              $('#move-btn').on('click', function(e) {
+                e.preventDefault();
+                var $el = $('#move');
+                ws.send('move', $el.val());
+                $el.val("");
               });
             }
         };

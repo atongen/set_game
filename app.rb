@@ -1,11 +1,11 @@
-require 'pathname'
-RT_ROOT = Pathname.new(File.expand_path('..', __FILE__))
-$:.unshift(RT_ROOT.join('lib'))
-
 GAMES = {}
 PLAYERS = {}
 
-require 'rt'
+require File.expand_path("../lib/rt", __FILE__)
+
+Rt::MoveProcessorGroup.run!
+Celluloid::Actor[:move_processor_pool].process!
+
 require 'sinatra'
 require 'sinatra-websocket'
 
