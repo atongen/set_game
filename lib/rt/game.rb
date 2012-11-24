@@ -16,6 +16,7 @@ module Rt
     set :player_ids
     list :comments
     hash_key :player_scores
+    value :creator_id
 
     attr_accessor :players
 
@@ -29,7 +30,7 @@ module Rt
         (0...81).to_a.shuffle.each { |i| deck << i }
         BOARD_SIZE.times { board << deck.pop }
         self.state.value = 'new'
-        self.name.value = "Game #{@id}"
+        self.name.value = "Game ##{@id}"
       end
 
       # ws can't be stored in redis...
@@ -48,6 +49,8 @@ module Rt
         $redis.lpush "game-moves", "#{id}:#{player.id}:" + data
       #when 'start'
         # do starting here
+      when 'invite'
+        invite(data, player.name.value)
       else
         puts "Unknown message: #{msg.inspect}"
       end
@@ -103,11 +106,14 @@ module Rt
     def remove_player(ws)
       if player = players[ws]
         player_name = player.name
-        player_ids.delete(player.id)
         players.delete(player)
         announce("#{player_name} left game")
         ws
       end
+    end
+
+    def invite(to_email, from_name, msg = nil)
+      $inviter.invite!(self.id, to_email, from_name, msg)
     end
 
     private

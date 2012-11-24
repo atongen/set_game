@@ -6,10 +6,14 @@ require 'redis/objects'
 module Rt
   class RedisConnection
     def self.create(options={})
-      url = options[:url] || determine_redis_provider || 'redis://localhost:6379/0'
+      if %w{ host port database }.all? { |key| options[key].present? }
+        url = "redis://#{options['host']}:#{options['port']}/#{options['database']}"
+      else
+        url = 'redis://localhost:6379/0'
+      end
       driver = options[:driver] || 'ruby'
       # need a connection for Fetcher and Retry
-      size = options[:size] || 5
+      size = options[:size] || 4
 
       ConnectionPool.new(:timeout => 1, :size => size) do
         build_client(url, options[:namespace], driver)
@@ -25,12 +29,5 @@ module Rt
       end
     end
     private_class_method :build_client
-
-    # Not public
-    def self.determine_redis_provider
-      return ENV['REDISTOGO_URL'] if ENV['REDISTOGO_URL']
-      provider = ENV['REDIS_PROVIDER'] || 'REDIS_URL'
-      ENV[provider]
-    end
   end
 end

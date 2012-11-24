@@ -11,6 +11,13 @@ require 'celluloid'
 require 'active_support/lazy_load_hooks'
 require 'active_support/core_ext/string'
 
+config_path = RT_ROOT.join('config', 'rt.yml')
+if File.file?(config_path)
+  CONFIG = YAML::load(File.read(config_path))
+else
+  CONFIG = {}
+end
+
 module Rt
   autoload :Model,              "rt/model"
   autoload :Msg,                "rt/msg"
@@ -20,6 +27,8 @@ module Rt
   autoload :MoveProcessor,      "rt/move_processor"
   autoload :MoveProcessorGroup, "rt/move_processor_group"
   autoload :PoolWrapper,        "rt/pool_wrapper"
+  autoload :Inviter,            "rt/inviter"
 end
 
 $redis = Rt::PoolWrapper.new
+$inviter = Rt::Inviter.new

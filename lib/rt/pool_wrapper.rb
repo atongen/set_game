@@ -6,7 +6,7 @@ module Rt
     attr_reader :redis
 
     def initialize
-      @redis = RedisConnection.create
+      @redis = RedisConnection.create(CONFIG['redis'])
     end
 
     def method_missing(sym, *args, &block)

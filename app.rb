@@ -47,7 +47,9 @@ end
 post '/games' do
   game = Rt::Game.new
   GAMES[game.id] = game
-  game.player_ids << get_player.id
+  player = get_player
+  game.player_ids << player.id
+  game.creator_id.value = player.id
   redirect to("/games/#{game.id}")
 end
 
