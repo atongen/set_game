@@ -13,7 +13,12 @@ module Rt
     end
 
     def announce(msg)
-      games.keys.each { |ws| ws.send(msg) }
+      games.values.each { |game| game.announce(msg) }
+    end
+
+    def broadcast(key, data)
+      obj = Msg.send(key, data)
+      games.keys.each { |ws| ws.send(obj) }
     end
 
     def add_game(ws, game)

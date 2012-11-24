@@ -40,17 +40,27 @@ module Rt
     end
 
     def handle(ws, msg)
+      touch
       player = players[ws]
       data = msg['data']
       case msg['type']
       when 'say'
-        announce("#{player.name.value} says '#{data}'")
+        announce("#{player.name.value}: #{data}")
       when 'move'
         $redis.lpush "game-moves", "#{id}:#{player.id}:" + data
-      #when 'start'
+      when 'start'
         # do starting here
       when 'invite'
         invite(data, player.name.value)
+      when 'rename_self'
+        old_name = player.name.value
+        player.name.value = data
+        player.announce("#{old_name} is now known as '#{data}'")
+        player.broadcast(:rename_self, data)
+      when 'rename_game'
+        self.name.value = data
+        announce("The game has been renamed '#{data}'")
+        broadcast(:rename_game, data)
       else
         puts "Unknown message: #{msg.inspect}"
       end
@@ -96,10 +106,14 @@ module Rt
     end
 
     def add_player(ws, player)
-      self.player_ids << player.id
       self.players[ws] = player
       @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }
-      announce("#{player.name.value} joined game")
+      if self.player_ids.include?(player.id)
+        announce("#{player.name.value} returned")
+      else
+        self.player_ids << player.id
+        announce("#{player.name.value} joined game")
+      end
       player
     end
 

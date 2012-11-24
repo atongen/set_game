@@ -1,0 +1,8 @@
+#!/bin/bash
+# Careful, this kills all thins...
+
+PROC=`ps aux | grep -i thin`
+if [[ ! -z "$PROC" ]]; then
+  PID=`echo $PROC | awk '{print $2}'`
+  kill -9 $PID
+fi

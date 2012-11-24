@@ -30,14 +30,16 @@ require.config({
 });
 
 require([
-    'domReady',
-    'application'
+  'domReady',
+  'application'
 ],
-    function(domReady, app){
-        app.bootstrap();
-
-        domReady(function () {
-            app.init();
-        });
-    }
+  function(
+    domReady,
+    app
+  ) {
+    app.bootstrap();
+    domReady(function () {
+      app.init();
+    });
+  }
 );

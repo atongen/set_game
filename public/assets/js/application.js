@@ -3,7 +3,10 @@ define([
     'underscore',
     'websocket'
 ],
-    function($, _) {
+    function(
+      $,
+      _
+    ) {
         var my = {};
 
         my.bootstrap = function() {
@@ -11,25 +14,30 @@ define([
         };
 
         my.init = function() {
-            var game_id = $('.game').attr('data-game-id');
+            var game_id = $('.game').data('game-id');
             if (game_id) {
-              console.log("game: " + game_id);
-
               var $comments = $('.comments');
               var $board = $('#board');
               var events = {};
 
               events.say = function(e) {
-                console.log(e)
                 $comments.append(e.data + "<br />");
+                $('.comments').animate({ scrollTop: $('.comments').prop("scrollHeight") }, "fast");
               };
 
               events.board = function(e) {
                 $board.text(e.data);
               }
 
+              events.rename_self = function(e) {
+                $('#player_name').text(e.data);
+              }
+
+              events.rename_game = function(e) {
+                $('#game_name').text(e.data);
+              }
+
               var ws_path = 'ws://' + window.location.host + window.location.pathname + '/ws';
-              //console.log(ws_path);
               var ws = $.websocket(ws_path, {
                 open: function() {
                   console.log("websocket opened");
@@ -40,9 +48,9 @@ define([
                 events: events
               });
 
-              $('#say').on('click', function(e) {
+              $('#say-btn').on('click', function(e) {
                 e.preventDefault();
-                var $el = $('#appendedInputButton');
+                var $el = $('#say');
                 var msg = $el.val();
                 if ($.trim(msg) != "") {
                   ws.send('say', msg);
@@ -61,59 +69,30 @@ define([
                 ws.send('move', $el.val());
                 $el.val("");
               });
+
+              $('#invite-btn').on('click', function(e) {
+                e.preventDefault();
+                var $el = $('#invite');
+                ws.send('invite', $el.val());
+                $el.val("");
+              });
+
+              $('#rename-self-btn').on('click', function(e) {
+                e.preventDefault();
+                var $el = $('#rename-self');
+                ws.send('rename_self', $el.val());
+                $el.val("");
+              });
+
+              $('#rename-game-btn').on('click', function(e) {
+                e.preventDefault();
+                var $el = $('#rename-game');
+                ws.send('rename_game', $el.val());
+                $el.val("");
+              });
             }
         };
-
-
 
         return my;
     }
 );
-
-/*
-$(document).ready(function () {
-    var $msgs = $('#msgs');
-    var events = {};
-    var selected = [];
-
-    events.say = function(e) {
-      //console.log(e);
-      $msgs.prepend(e.data.msg + "<br />");
-    };
-
-    var ws = $.websocket('ws://' + window.location.host + window.location.pathname, {
-      open: function() {
-        console.log("websocket opened");
-      },
-      close: function() {
-        console.log("websocket closed");
-      },
-      events: events  
-    });
-
-    $('#button').on('click', function(e) {
-      e.preventDefault();
-      var msg = $('#input').val();
-      if ($.trim(msg) != "") {
-        ws.send('say', { msg: msg });
-      }
-    });
-
-    for (var i = 0; i++; i < 12) {
-        console.log('wow', i);
-        (function(n) {
-            console.log('yo', n);
-            $('#' + n).on('click', function(e) {
-                console.log('now', n);
-                if (selected[n]) {
-                    $(this).removeClass('selected');
-                    selected[n] = false;
-                } else {
-                    $(this.addClass('selected'));
-                    selected[n] = true;
-                }
-            });
-        }(i))
-    }
-});
-*/
