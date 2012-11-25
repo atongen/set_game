@@ -6,7 +6,7 @@ module Rt
     NUM   = %w{ one    two      three  }
     FILL  = %w{ open   shaded   solid  }
     COLOR = %w{ red    blue     yellow }
-    SHAPE = %w{ circle triangle square }
+    SHAPE = %w{ oval   diamond  bowtie }
 
     def initialize(i, num, fill, color, shape)
       if (0...81).include?(i)

@@ -14,3 +14,7 @@ gem 'yui-compressor'
 gem 'active_support'
 gem 'i18n'
 gem 'pony'
+
+group :assets do
+  gem 'rmagick', :require => 'Magick'
+end
