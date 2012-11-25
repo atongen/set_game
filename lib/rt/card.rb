@@ -5,7 +5,7 @@ module Rt
 
     NUM   = %w{ one    two      three  }
     FILL  = %w{ open   shaded   solid  }
-    COLOR = %w{ red    blue     yellow }
+    COLOR = %w{ red    blue     green }
     SHAPE = %w{ oval   diamond  bowtie }
 
     def initialize(i, num, fill, color, shape)

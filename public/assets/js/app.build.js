@@ -3,9 +3,6 @@
  */
 {
   shim: {
-    underscore: {
-        exports: '_'
-    },
     websocket: {
         deps: ['jquery'],
         exports: 'websocket'
@@ -25,7 +22,8 @@
       websocket:   'vendor/jquery.websocket',
       json:        'vendor/json2',
       underscore:  'vendor/underscore',
-      bootstrap:   'vendor/bootstrap'
+      bootstrap:   'vendor/bootstrap',
+      backbone:    'vendor/backbone'
   },
   name: 'main',
   out:  'main-built.js'

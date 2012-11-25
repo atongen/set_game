@@ -3,8 +3,8 @@
  */
 require.config({
   shim: {
-    underscore: {
-        exports: '_'
+    jquery: {
+      exports: 'jquery'
     },
     websocket: {
         deps: ['jquery'],
@@ -13,33 +13,38 @@ require.config({
     bootstrap: {
         deps: ['jquery'],
         exports: 'bootstrap'
+    },
+    json: {
+      exports: 'json'
     }
   },
   baseUrl: '/assets/js',
   paths: {
-      main:        'main',
-      application: 'application',
-      domReady:    'vendor/domReady',
-      text:        'vendor/text',
-      jquery:      'vendor/jquery',
-      websocket:   'vendor/jquery.websocket',
-      json:        'vendor/json2',
-      underscore:  'vendor/underscore',
-      bootstrap:   'vendor/bootstrap'
+      domReady:        'vendor/domReady',
+      text:            'vendor/text',
+      jquery:          'vendor/jquery',
+      json:            'vendor/json2',
+      underscore:      'vendor/underscore',
+      bootstrap:       'vendor/bootstrap',
+      backbone_vendor: 'vendor/backbone',
+      backbone:        'lib/BackboneWrapper'
   }
 });
 
 require([
+  'jquery',
   'domReady',
-  'application'
+  'app/views/app'
 ],
-  function(
-    domReady,
-    app
-  ) {
-    app.bootstrap();
-    domReady(function () {
-      app.init();
-    });
-  }
-);
+function (
+  $,
+  domReady,
+  AppView
+) {
+  domReady(function () {
+    var game_id = $('body').data('game-id');
+    if (game_id) {
+      new AppView({ game_id: game_id });
+    }
+  });
+});

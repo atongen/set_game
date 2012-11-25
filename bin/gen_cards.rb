@@ -9,13 +9,18 @@ $:.unshift RT_ROOT.join('lib')
 require 'rt/card'
 
 PAD = 20
-MAP = "RGBA"
+MAP = "RGB"
 
 SHAPE_WIDTH  = 640
 SHAPE_HEIGHT = 320
 
 CARD_WIDTH  = 720
 CARD_HEIGHT = 1120
+
+RED    = [1.0, 0.0, 0.0, '#FFFFFF']
+BLUE   = [0.0, 0.0, 1.0, '#FFFFFF']
+YELLOW = [1.0, 1.0, 0.0, '#FFFFFF']
+GREEN  = [0.0, 1.0, 0.0, '#FFFFFF']
 
 @assets = %w{ oval diamond bowtie shaded solid }.inject({}) do |assets, asset|
   assets[asset] = ImageList.new(RT_ROOT.join('work', 'assets', "#{asset}.png").to_s)[0]
@@ -43,7 +48,7 @@ def build_card_img(card)
   end
 
   shape_img = shape_img_list.flatten_images
-  shape_img_pixels = shape_img.export_pixels(0, 0, SHAPE_WIDTH, SHAPE_HEIGHT, MAP)
+  shape_img_pixels = shape_img.export_pixels_to_str(0, 0, SHAPE_WIDTH, SHAPE_HEIGHT, MAP)
   card_img = Image.new(CARD_WIDTH, CARD_HEIGHT)
 
   case card.num
@@ -64,19 +69,22 @@ def build_card_img(card)
   # set the color
   case card.color
   when 'red'
-    card_img_list = card_img_list.colorize(1.0, 0.0, 0.0, '#FF0000')
+    card_img_list = card_img_list.colorize(*RED)
   when 'blue'
-    card_img_list = card_img_list.colorize(0.0, 0.0, 1.0, '#0000FF')
+    card_img_list = card_img_list.colorize(*BLUE)
   when 'yellow'
-    card_img_list = card_img_list.colorize(1.0, 1.0, 0.0, '#FFFF00')
+    card_img_list = card_img_list.colorize(*YELLOW)
+  when 'green'
+    card_img_list = card_img_list.colorize(*GREEN)
   end
 
   card_img_list
 end
 
 Rt::Card::DECK.each do |card|
-  puts card.to_s
+  i = card.i.to_s.rjust(2, '0')
+  puts "#{i} #{card}"
   card_img = build_card_img(card)
-  card_img.write(RT_ROOT.join('work', 'gen', "card-#{card.i.to_s.rjust(2, '0')}.png").to_s)
+  card_img.write(RT_ROOT.join('work', 'gen', "#{i}-card.png").to_s)
   card_img.destroy!
 end

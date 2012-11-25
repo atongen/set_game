@@ -1,50 +1,77 @@
-<div class="row">
-  <div class="span3">
-    <div class="input-append">
-      <input class="span2" id="say" type="text">
-      <button class="btn" id="say-btn" type="button">Say!</button>
-    </div>
-    <div class="well comments">
-      <% @game.comments.each do |comment| %>
-      <div class="comment">
-        <%= comment %>
-      </div>
-      <% end %>
-    </div>
-    <div class="input-append">
-      <input class="span2" id="invite" type="text">
-      <button class="btn" id="invite-btn" type="button">Invite</button>
-    </div>
-    <div class="input-append">
-      <input class="span2" id="rename-self" type="text">
-      <button class="btn" id="rename-self-btn" type="button">Name</button>
-    </div>
-    <div class="input-append">
-      <input class="span2" id="rename-game" type="text">
-      <button class="btn" id="rename-game-btn" type="button">Game</button>
-    </div>
-  </div>
-  <div class="span9">
-    <div class="hero-unit">
-      <div id="board">
-        <!-- Oops, your browser doesn't support the canvas element. Please upgrade to Chrome. -->
-      </div>
-      <div class="game" data-game-id="<%= @game.id %>">
-        Game: <span id="game_name"><%= @game.name.value %></span><br />
-        URL: <%= CONFIG['url'] %>/games/<%= @game.id %><br />
-        Password: <%= @game.password.value %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="span4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn" href="#" id="test">Perform test &raquo;</a></p>
-        <div class="input-append">
-          <input class="span2" id="move" type="text">
-          <button class="btn" id="move-btn" type="button">Move!</button>
+<body data-view="game" data-game-id="<%= @game.id %>">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="<%= CONFIG['url'] + '/games/' + @game.id.to_s %>"><%= @game.name.value %></a>
+        <div class="nav-collapse collapse">
+          <p class="navbar-text pull-right">
+          Welcome <strong id="player_name"><%= get_player.name.value %></strong>
+          </p>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="span3">
+        <div class="input-append">
+          <input class="span2" id="say" type="text">
+          <button class="btn" id="say-btn" type="button">Say!</button>
+        </div>
+        <div class="well comments">
+          <% @game.comments.each do |comment| %>
+            <div class="comment">
+              <%= comment %>
+            </div>
+          <% end %>
+        </div>
+        <div class="input-append">
+          <input class="span2" id="invite" type="text">
+          <button class="btn" id="invite-btn" type="button">Invite</button>
+        </div>
+        <div class="input-append">
+          <input class="span2" id="rename-self" type="text">
+          <button class="btn" id="rename-self-btn" type="button">Name</button>
+        </div>
+        <div class="input-append">
+          <input class="span2" id="rename-game" type="text">
+          <button class="btn" id="rename-game-btn" type="button">Game</button>
+        </div>
+      </div>
+      <div class="span9">
+        <div class="hero-unit">
+          <div id="board">
+            <!-- Oops, your browser doesn't support the canvas element. Please upgrade to Chrome. -->
+          </div>
+          <div>
+            Game: <span id="game_name"><%= @game.name.value %></span><br />
+            URL: <%= CONFIG['url'] %>/games/<%= @game.id %><br />
+            Password: <%= @game.password.value %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span4">
+            <h2>Heading</h2>
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+            <p><a class="btn" href="#" id="test">Perform test &raquo;</a></p>
+            <div class="input-append">
+              <input class="span2" id="move" type="text">
+              <button class="btn" id="move-btn" type="button">Move!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= erb :footer %>
+  </div>
+</body>
