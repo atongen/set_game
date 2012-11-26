@@ -75,7 +75,7 @@ get '/games/:id/ws' do
       end
       ws.onmessage do |msg|
         EM.next_tick do
-          game.handle(ws, Rt::Msg.parse(msg))
+          game.handle(ws, msg)
         end
       end
       ws.onclose do

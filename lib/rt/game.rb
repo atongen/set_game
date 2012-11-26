@@ -42,10 +42,10 @@ module Rt
     def handle(ws, msg)
       touch
       player = players[ws]
-      data = msg['data']
-      case msg['type']
-      when 'say'
-        announce("#{player.name.value}: #{data}")
+      type, data = Msg.parse(msg).values_at('type', 'data')
+      case type
+      when 'create_comment'
+        announce(player.name.value, data['content'])
       when 'move'
         $redis.lpush "game-moves", "#{id}:#{player.id}:" + data
       when 'start'
@@ -66,9 +66,14 @@ module Rt
       end
     end
 
-    def announce(msg)
-      self.comments << msg
-      broadcast(:say, msg)
+    def announce(author, content)
+      comment = { 
+        'author' => author,
+        'content' => content,
+        'created_at' => Time.now.to_s
+      }
+      self.comments << comment.to_json
+      broadcast(:read_comments, comment)
     end
 
     def broadcast(key, data)
@@ -94,8 +99,8 @@ module Rt
               broadcast(:board, board.map(&:to_s).join(":"))
             else
               # That wasn't a set!
-              ws = players.key(player)
-              ws.send(Msg.say("sorry"))
+              #ws = players.key(player)
+              #ws.send(Msg.say("sorry"))
             end
           else
             # Invalid move
@@ -109,19 +114,21 @@ module Rt
       self.players[ws] = player
       @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }
       if self.player_ids.include?(player.id)
-        announce("#{player.name.value} returned")
+        announce(name.value, "#{player.name.value} returned")
       else
         self.player_ids << player.id
-        announce("#{player.name.value} joined game")
+        announce(name.value, "#{player.name.value} joined game")
       end
+      # send comments to player
+      ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
       player
     end
 
     def remove_player(ws)
       if player = players[ws]
-        player_name = player.name
+        player_name = player.name.value
         players.delete(player)
-        announce("#{player_name} left game")
+        announce(name.value, "#{player_name} left game")
         ws
       end
     end

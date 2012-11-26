@@ -31,12 +31,10 @@ define([
       }
 
       connection.onopen = function() {
-        console.log("ws open");
         EventBus.trigger("conn:open");
       }
 
       connection.onclose = function() {
-        console.log("ws close");
         EventBus.trigger("conn:close");
       }
 
@@ -54,6 +52,10 @@ define([
         }
         return connection.send(JSON.stringify(m, null, 2))
       }
+
+      EventBus.on("conn:send", function(type, data) {
+        my.send(type, data);
+      });
 
       $(window).unload(function(){ connection.close(); connection = null });
 

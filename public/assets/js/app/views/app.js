@@ -2,6 +2,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
+  'lib/EventBus',
+  'lib/WebSocket',
+  'app/models/comments',
   'app/views/comments'
 ],
 
@@ -9,39 +12,38 @@ function(
   $,
   _,
   Backbone,
+  EventBus,
+  ws,
+  CommentsCollection,
   CommentsView
 ) {
 
   return Backbone.View.extend({
 
-    comments_view: null,
+    comments: null,
     game_id: null,
     el: $('body'),
 
     initialize: function(options) {
       _.bindAll(this);
       this.game_id = options.game_id;
-      this.comments_view = new CommentsView();
+
+      /**
+       * Setup comments
+       */
+      this.comments = new CommentsCollection();
+      new CommentsView({
+        el: '#comments',
+        collection: this.comments
+      });
+      EventBus.on('conn:msg:read_comments', function(data) {
+        this.comments.add(data);
+      }, this);
     }
   });
 });
 
 /*
-        events.say = function(e) {
-          $('.comments').append(e.data + "<br />");
-          $('.comments').animate({ scrollTop: $('.comments').prop("scrollHeight") }, "fast");
-        };
-
-        var bind = function() {
-            $('#say-btn').on('click', function(e) {
-              e.preventDefault();
-              var $el = $('#say');
-              var msg = $el.val();
-              if ($.trim(msg) != "") {
-                ws.send('say', msg);
-                $el.val("");
-              }
-            });
 
             $('#move-btn').on('click', function(e) {
               e.preventDefault();

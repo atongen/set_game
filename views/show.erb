@@ -24,17 +24,17 @@
   <div class="container">
     <div class="row">
       <div class="span3">
+        <div id="comments">
         <div class="input-append">
-          <input class="span2" id="say" type="text">
-          <button class="btn" id="say-btn" type="button">Say!</button>
+          <input class="span2" id="comment" type="text">
+          <button class="btn" id="comment-btn" type="button">Say!</button>
         </div>
-        <div class="well comments">
-          <% @game.comments.each do |comment| %>
-            <div class="comment">
-              <%= comment %>
-            </div>
-          <% end %>
+        <div class="well">
+          <ul class="comment-list">
+          </ul>
+        </ul>
         </div>
+      </div>
         <div class="input-append">
           <input class="span2" id="invite" type="text">
           <button class="btn" id="invite-btn" type="button">Invite</button>

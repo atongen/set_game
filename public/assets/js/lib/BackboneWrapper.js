@@ -2,7 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone_vendor',
-  'lib/WebSocket'
+  'lib/EventBus'
 ],
 
   /**
@@ -12,42 +12,37 @@ define([
     $,
     _,
     Backbone,
-    ws
+    EventBus
   ) {
 
     Backbone.sync = function(method, model, options) {
-      var result = [];
+      var result = false;
 
       // module must respond to type method
       var type = model.type();
       if (type) {
         switch (method) {
           case 'read':
-            result[0] = false;
-            result[1] = { message: "Cannot request read." }
             break;
           case 'create':
-            result[0] = true;
-            result[1] = ws.send("create_" + type, model.attributes);
+            EventBus.trigger("conn:send", "create_" + type, model.attributes);
+            result = true;
             break;
           case 'update':
-            result[0] = true;
-            result[1] = ws.send("update_" + type, model.attributes);
+            EventBus.trigger("conn:send", "update_" + type, model.attributes);
+            result = true;
             break;
           case 'delete':
-            result[0] = true;
-            result[1] = ws.send("delete_" + type, model.id);
+            EventBus.trigger("conn:send", "delete_" + type, model.id);
+            result = true;
             break;
         }
-      } else {
-        result[0] = false;
-        result[1] = { message: "No type for model given." };
       }
 
-      if (result[0] && _.isFunction(options.success)) {
-        options.success.call(null, result[1]);
-      } else if (!result[0] && _.isFunction(options.error)) {
-        options.error.call(null, result[1]);
+      if (result && _.isFunction(options.success)) {
+        options.success.call(null);
+      } else if (!result && _.isFunction(options.error)) {
+        options.error.call(null);
       }
     }
 
