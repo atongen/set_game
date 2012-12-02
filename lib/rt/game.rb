@@ -112,7 +112,6 @@ module Rt
 
     def add_player(ws, player)
       self.players[ws] = player
-      @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }
       if self.player_ids.include?(player.id)
         announce(name.value, "#{player.name.value} returned")
       else
@@ -121,6 +120,8 @@ module Rt
       end
       # send comments to player
       ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
+      # send board to player
+      send_board(ws)
       player
     end
 
@@ -138,6 +139,10 @@ module Rt
     end
 
     private
+
+    def send_board(ws)
+      @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }
+    end
 
     def touch
       self.last_activity_at = Time.now.to_f

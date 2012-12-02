@@ -25,53 +25,40 @@
     <div class="row">
       <div class="span3">
         <div id="comments">
-        <div class="input-append">
-          <input class="span2" id="comment" type="text">
-          <button class="btn" id="comment-btn" type="button">Say!</button>
-        </div>
-        <div class="well">
-          <ul class="comment-list">
+          <div class="input-append">
+            <input class="span2" id="comment" type="text">
+            <button class="btn" id="comment-btn" type="button">Say!</button>
+          </div>
+          <div class="well">
+            <ul class="comment-list">
+            </ul>
           </ul>
-        </ul>
         </div>
       </div>
-        <div class="input-append">
-          <input class="span2" id="invite" type="text">
-          <button class="btn" id="invite-btn" type="button">Invite</button>
-        </div>
-        <div class="input-append">
-          <input class="span2" id="rename-self" type="text">
-          <button class="btn" id="rename-self-btn" type="button">Name</button>
-        </div>
-        <div class="input-append">
-          <input class="span2" id="rename-game" type="text">
-          <button class="btn" id="rename-game-btn" type="button">Game</button>
+    </div>
+    <div class="span9">
+      <div class="hero-unit">
+        <canvas id="board" width="648" height="756">
+          <p>Oops, your browser doesn't support the canvas element. Please upgrade to Chrome.</p>
+        </canvas>
+        <div>
+          Game: <span id="game_name"><%= @game.name.value %></span><br />
+          URL: <%= CONFIG['url'] %>/games/<%= @game.id %><br />
+          Password: <%= @game.password.value %>
         </div>
       </div>
-      <div class="span9">
-        <div class="hero-unit">
-          <div id="board">
-            <!-- Oops, your browser doesn't support the canvas element. Please upgrade to Chrome. -->
-          </div>
-          <div>
-            Game: <span id="game_name"><%= @game.name.value %></span><br />
-            URL: <%= CONFIG['url'] %>/games/<%= @game.id %><br />
-            Password: <%= @game.password.value %>
-          </div>
-        </div>
-        <div class="row">
-          <div class="span4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#" id="test">Perform test &raquo;</a></p>
-            <div class="input-append">
-              <input class="span2" id="move" type="text">
-              <button class="btn" id="move-btn" type="button">Move!</button>
-            </div>
+      <div class="row">
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn" href="#" id="test">Perform test &raquo;</a></p>
+          <div class="input-append">
+            <input class="span2" id="move" type="text">
+            <button class="btn" id="move-btn" type="button">Move!</button>
           </div>
         </div>
       </div>
     </div>
-    <%= erb :footer %>
   </div>
+  <%= erb :footer %>
 </body>

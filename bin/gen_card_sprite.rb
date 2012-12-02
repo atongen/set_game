@@ -6,7 +6,7 @@ include Magick
 
 RT_ROOT = Pathname.new(File.expand_path(File.join('..', '..'), __FILE__))
 
-CARD_WIDTH   = 189
+CARD_WIDTH   = 162
 CARD_HEIGHT  = 252
 SPRITE_WIDTH  = CARD_WIDTH  * 9
 SPRITE_HEIGHT = CARD_HEIGHT * 9

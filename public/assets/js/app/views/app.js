@@ -5,7 +5,8 @@ define([
   'lib/EventBus',
   'lib/WebSocket',
   'app/models/comments',
-  'app/views/comments'
+  'app/views/comments',
+  'app/views/board'
 ],
 
 function(
@@ -15,14 +16,16 @@ function(
   EventBus,
   ws,
   CommentsCollection,
-  CommentsView
+  CommentsView,
+  BoardView
 ) {
 
   return Backbone.View.extend({
 
-    comments: null,
-    game_id: null,
     el: $('body'),
+    game_id: null,
+    comments: null,
+    boardView: null,
 
     initialize: function(options) {
       _.bindAll(this);
@@ -39,39 +42,11 @@ function(
       EventBus.on('conn:msg:read_comments', function(data) {
         this.comments.add(data);
       }, this);
+
+      /**
+       * Setup board
+       */
+      this.boardView = new BoardView({ el: '#board' });
     }
   });
 });
-
-/*
-
-            $('#move-btn').on('click', function(e) {
-              e.preventDefault();
-              var $el = $('#move');
-              ws.send('move', $el.val());
-              $el.val("");
-            });
-
-            $('#invite-btn').on('click', function(e) {
-              e.preventDefault();
-              var $el = $('#invite');
-              ws.send('invite', $el.val());
-              $el.val("");
-            });
-
-            $('#rename-self-btn').on('click', function(e) {
-              e.preventDefault();
-              var $el = $('#rename-self');
-              ws.send('rename_self', $el.val());
-              $el.val("");
-            });
-
-            $('#rename-game-btn').on('click', function(e) {
-              e.preventDefault();
-              var $el = $('#rename-game');
-              ws.send('rename_game', $el.val());
-              $el.val("");
-            });
-        }
-
-        */

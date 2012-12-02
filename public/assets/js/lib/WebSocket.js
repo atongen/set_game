@@ -40,6 +40,7 @@ define([
 
       connection.onmessage = function(e) {
         var m = JSON.parse(e.data);
+        console.log(m);
         var type = m.type;
         var data = m.data;
         EventBus.trigger("conn:msg:" + type, data)
