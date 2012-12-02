@@ -40,11 +40,17 @@ function(
         },
 
         render: function() {
-            console.log("rendering board", this.board);
+            //console.log(Cards);
+            //console.log(this.board);
+            _.each(this.board, function(card_id) {
+                console.log(Cards.get(card_id).to_s());
+            });
         },
 
         set_board: function(board) {
-            this.board = board;
+            this.board = _.map(board.split(':'), function(card) {
+                return parseInt(card, 10);
+            }, this)
         }
 
     });

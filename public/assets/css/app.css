@@ -35,3 +35,7 @@ body {
   height: 400px;
   overflow-y: scroll;
 }
+
+.hero-unit {
+  padding: 26px;
+}

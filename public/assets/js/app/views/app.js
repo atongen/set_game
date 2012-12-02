@@ -14,7 +14,7 @@ function(
   _,
   Backbone,
   EventBus,
-  ws,
+  WebSocket,
   CommentsCollection,
   CommentsView,
   BoardView
@@ -47,6 +47,11 @@ function(
        * Setup board
        */
       this.boardView = new BoardView({ el: '#board' });
+
+      /**
+       * Initialize the websocket connection
+       */
+      WebSocket.init();
     }
   });
 });

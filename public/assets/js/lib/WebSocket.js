@@ -19,31 +19,44 @@ define([
       var connection;
 
       /**
-       * Establish connection or stub object
+       * Initialize the websocket connection
        */
-      if (WebSocket) {
-        connection = new WebSocket(path);
-      } else {
-        connection = {
-          send: function(m){ return false },
-          close: function(){}
-        }
-      }
+      my.init = function() {
 
-      connection.onopen = function() {
-        EventBus.trigger("conn:open");
-      }
+          /**
+           * Establish connection or stub object
+           */
+          if (WebSocket) {
+            connection = new WebSocket(path);
+          } else {
+            connection = {
+              send: function(m){ return false },
+              close: function(){}
+            }
+          }
 
-      connection.onclose = function() {
-        EventBus.trigger("conn:close");
-      }
+          connection.onopen = function() {
+            EventBus.trigger("conn:open");
+          }
 
-      connection.onmessage = function(e) {
-        var m = JSON.parse(e.data);
-        console.log(m);
-        var type = m.type;
-        var data = m.data;
-        EventBus.trigger("conn:msg:" + type, data)
+          connection.onclose = function() {
+            EventBus.trigger("conn:close");
+          }
+
+          connection.onmessage = function(e) {
+            var m = JSON.parse(e.data);
+            //console.log(m);
+            var type = m.type;
+            var data = m.data;
+            EventBus.trigger("conn:msg:" + type, data)
+          }
+
+          EventBus.on("conn:send", function(type, data) {
+            my.send(type, data);
+          });
+
+          $(window).unload(function(){ connection.close(); connection = null });
+
       }
 
       my.send = function(type, data) {
@@ -53,12 +66,6 @@ define([
         }
         return connection.send(JSON.stringify(m, null, 2))
       }
-
-      EventBus.on("conn:send", function(type, data) {
-        my.send(type, data);
-      });
-
-      $(window).unload(function(){ connection.close(); connection = null });
 
       return my;
   }
