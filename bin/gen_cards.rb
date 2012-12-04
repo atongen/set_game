@@ -2,7 +2,7 @@
 
 require 'pathname'
 require 'RMagick'
-require 'celluloid'
+#require 'celluloid'
 
 RT_ROOT = Pathname.new(File.expand_path(File.join('..', '..'), __FILE__))
 $:.unshift RT_ROOT.join('lib')
@@ -29,7 +29,7 @@ end
 
 class CardBuilder
   include Magick
-  include Celluloid
+  #include Celluloid
 
   def build(card)
     i = card.i.to_s.rjust(2, '0')
@@ -91,9 +91,15 @@ class CardBuilder
   end
 end
 
-pool = CardBuilder.pool
-futures = Rt::Card::DECK[0..9].map do |card|
-  pool.future.build(card)
-end
+# Attempt to build cards in parallel - revisit this
+#pool = CardBuilder.pool
+#futures = Rt::Card::DECK.map do |card|
+#  pool.future.build(card)
+#end
 
-futures.map(&:value)
+#futures.map(&:value)
+
+cb = CardBuilder.new
+Rt::Card::DECK.each do |card|
+  cb.build(card)
+end

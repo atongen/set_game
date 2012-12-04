@@ -1,9 +1,9 @@
 define([
-  'lib/ImageLoader'
+    'lib/ImageLoader'
 ],
-  function(
-      ImageLoader
-  ) {
-    return new ImageLoader;
-  }
-);
+
+function(
+    ImageLoader
+) {
+    return new ImageLoader();
+});
