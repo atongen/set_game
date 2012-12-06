@@ -1,0 +1,13 @@
+url: http://localhost:3000
+redis:
+  host: 127.0.0.1
+  port: 6379
+  database: 0
+smtp:
+  address: smtp.gmail.com
+  port: 587
+  enable_starttls_auto: true,
+  user_name: example@gmail.com
+  password: h@ackm3
+  authentication: plain
+  domain: gmail.com

@@ -46,8 +46,8 @@ module Rt
       case type
       when 'create_comment'
         announce(player.name.value, data['content'])
-      when 'move'
-        $redis.lpush "game-moves", "#{id}:#{player.id}:" + data
+      when 'create_move'
+        $redis.lpush "game-moves", "#{id}:#{player.id}:" + data['spec']
       when 'start'
         # do starting here
       when 'invite'
@@ -67,7 +67,7 @@ module Rt
     end
 
     def announce(author, content)
-      comment = { 
+      comment = {
         'author' => author,
         'content' => content,
         'created_at' => Time.now.to_s
@@ -84,18 +84,18 @@ module Rt
     def handle_move(player_id, pos1, card1, pos2, card2, pos3, card3)
       @lock.synchronize do
         if player = players.values.detect { |p| p.id == player_id }
-          announce "#{player.name.value} moved: " + [pos1, card1, pos2, card2, pos3, card3].inspect
-          announce [board[pos1], board[pos2], board[pos3]].inspect
+          announce self.name.value, "#{player.name.value} moved: " + [pos1, card1, pos2, card2, pos3, card3].inspect
+          announce self.name.value, [board[pos1], board[pos2], board[pos3]].inspect
           if board[pos1].to_i == card1 &&
              board[pos2].to_i == card2 &&
              board[pos3].to_i == card3
             # It's a valid move
             if Card.set_index?(card1, card2, card3)
               # It's a set!
-              announce "#{player.name.value} got a set!"
+              announce self.name.value, "#{player.name.value} got a set!"
               [pos1, pos2, pos3].each { |pos| board[pos] = deck.pop }
-              player_scores[player.id] ||= 0
-              player_scores[player.id] += 1
+              #player_scores[player.id] ||= 0
+              #player_scores[player.id] += 1
               broadcast(:board, board.map(&:to_s).join(":"))
             else
               # That wasn't a set!
@@ -104,7 +104,7 @@ module Rt
             end
           else
             # Invalid move
-            announce "#{player.name.value} tried to cheat!"
+            announce self.name.value, "#{player.name.value} tried to cheat!"
           end
         end
       end

@@ -4,7 +4,8 @@ define([
     'backbone',
     'lib/EventBus',
     'lib/GlobalImageLoader',
-    'app/models/cards'
+    'app/models/cards',
+    'app/models/move'
 ],
 
 function(
@@ -13,7 +14,8 @@ function(
     Backbone,
     EventBus,
     ImageLoader,
-    Cards
+    Cards,
+    Move
 ) {
 
     return Backbone.View.extend({
@@ -70,9 +72,18 @@ function(
         },
 
         set_board: function(board) {
-            this.board = _.map(board.split(':'), function(card) {
+            var selected = [];
+            var new_board = _.map(board.split(':'), function(card) {
                 return parseInt(card, 10);
-            }, this)
+            }, this);
+            _.each(this.selected, function(idx) {
+                if (new_board[idx] == this.board[idx]) {
+                    // board has not changed for the selected position
+                    selected.push(idx);
+                }
+            });
+            this.selected = selected;
+            this.board = new_board;
         },
 
         _draw_card: function(src_id, dst_id) {
@@ -98,13 +109,14 @@ function(
                 this.selected.push(dst_id);
                 if (this.selected.length == 3) {
                     // get the id's of the selected cards
-                    var scards = _.map(this.selected.slice(0,3), function(bidx) { 
-                        return this.board[bidx] 
+                    var scards = _.map(this.selected, function(bidx) {
+                        return this.board[bidx];
                     }, this);
                     // check to see if they are a set
                     if (Cards.is_set(scards[0], scards[1], scards[2])) {
                         // the user has selected a set
-                        console.log("You got one!");
+                        var spec = _.flatten(_.zip(this.selected, scards));
+                        (new Move({ spec: spec.join(":") })).save();
                     } else {
                         // the user has selected three or more cards that do not create a set
                         this.selected = [];
