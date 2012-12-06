@@ -81,7 +81,7 @@ function(
                     // board has not changed for the selected position
                     selected.push(idx);
                 }
-            });
+            }, this);
             this.selected = selected;
             this.board = new_board;
         },
