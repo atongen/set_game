@@ -26,7 +26,6 @@ function(
         sprite_path: '/assets/images/card_sprite.png',
         card_width: 162,
         card_height: 252,
-        offset: null,
         hightlight: -1,
         highlight_fill_style: "rgba(200,200,200,0.25)",
         selected_fill_style: "rgba(100,100,100,0.5)",
@@ -41,7 +40,6 @@ function(
             _.bindAll(this);
 
             if (this.el.getContext) {
-                this.offset = this.$el.offset();
                 this.ctx = this.el.getContext('2d');
                 ImageLoader.add(this.sprite_path, {
                     context: this,
@@ -166,9 +164,11 @@ function(
         },
 
         _mouse_pos: function(e) {
-            var x = e.pageX - this.offset.left;
-            var y = e.pageY - this.offset.top;
-            return {x:x, y:y};
+            var offset = this.el.getBoundingClientRect();
+            return {
+                x: e.clientX - offset.left,
+                y: e.clientY - offset.top
+            }
         },
 
         _highlight_dst_id: function(dst_id, fill_style) {
