@@ -13,7 +13,7 @@ require 'active_support/core_ext/string'
 
 config_path = RT_ROOT.join('config', 'rt.yml')
 if File.file?(config_path)
-  CONFIG = YAML::load(File.read(config_path))
+  CONFIG = YAML::load(File.read(config_path)) || {}
 else
   CONFIG = {}
 end

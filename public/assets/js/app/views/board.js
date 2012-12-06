@@ -54,6 +54,7 @@ function(
         },
 
         render: function() {
+            //console.log("rendering board");
             // draw card for each board slot
             _.each(this.board, function(card_id, i) {
                 this._draw_card(card_id, i);
@@ -91,21 +92,41 @@ function(
             var dst_id = this._dst_pix_to_id(this._mouse_pos(e));
             var idx = _.indexOf(this.selected, dst_id);
             if (idx >= 0) {
+                // card is already selected, de-select it
                 this.selected.splice(idx, 1);
-            } else {
+            } else if (this.selected.length < 3) {
                 this.selected.push(dst_id);
+                if (this.selected.length == 3) {
+                    // get the id's of the selected cards
+                    var scards = _.map(this.selected.slice(0,3), function(bidx) { 
+                        return this.board[bidx] 
+                    }, this);
+                    // check to see if they are a set
+                    if (Cards.is_set(scards[0], scards[1], scards[2])) {
+                        // the user has selected a set
+                        console.log("You got one!");
+                    } else {
+                        // the user has selected three or more cards that do not create a set
+                        this.selected = [];
+                    }
+                }
             }
             this.render();
         },
 
         _handle_mouse_leave: function(e) {
-            this.highlight = -1;
-            this.render();
+            if (this.highlight != -1) {
+                this.highlight = -1;
+                this.render();
+            }
         },
 
         _handle_mouse_move: function(e) {
-            this.highlight = this._dst_pix_to_id(this._mouse_pos(e));
-            this.render();
+            var highlight = this._dst_pix_to_id(this._mouse_pos(e));
+            if (highlight != this.highlight) {
+                this.highlight = highlight;
+                this.render();
+            }
         },
 
         _src_id_to_pix: function(src_id) {

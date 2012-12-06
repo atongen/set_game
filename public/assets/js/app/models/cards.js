@@ -32,12 +32,12 @@ function(
         },
 
         is_set: function(id1, id2, id3) {
-            _.all(['num', 'fill', 'color', 'shape'], function(attr) {
-                var c1 = this.get(id1);
-                var c2 = this.get(id2);
-                var c3 = this.get(id3);
+            var c1 = this.get(id1);
+            var c2 = this.get(id2);
+            var c3 = this.get(id3);
 
-                return (
+            return _.all(['num', 'fill', 'color', 'shape'], function(attr) {
+                return ((
                     // either all attributes are the same...
                     c1.get(attr) == c2.get(attr) &&
                     c2.get(attr) == c3.get(attr)
@@ -46,7 +46,7 @@ function(
                     c1.get(attr) != c2.get(attr) &&
                     c2.get(attr) != c3.get(attr) &&
                     c1.get(attr) != c3.get(attr)
-                );
+                ));
             }, this);
         }
     });

@@ -6,6 +6,7 @@ require 'redis/objects'
 module Rt
   class RedisConnection
     def self.create(options={})
+      options = {} unless options.present?
       if %w{ host port database }.all? { |key| options[key].present? }
         url = "redis://#{options['host']}:#{options['port']}/#{options['database']}"
       else
