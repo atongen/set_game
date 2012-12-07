@@ -15,7 +15,7 @@ module Rt
     list :board
     set :player_ids
     list :comments
-    hash_key :player_scores
+    hash_key :scores
     value :creator_id
 
     attr_accessor :players
@@ -41,28 +41,32 @@ module Rt
 
     def handle(ws, msg)
       touch
-      player = players[ws]
-      type, data = Msg.parse(msg).values_at('type', 'data')
-      case type
-      when 'create_comment'
-        announce(player.name.value, data['content'])
-      when 'create_move'
-        $redis.lpush "game-moves", "#{id}:#{player.id}:" + data['spec']
-      when 'start'
-        # do starting here
-      when 'invite'
-        invite(data, player.name.value)
-      when 'rename_self'
-        old_name = player.name.value
-        player.name.value = data
-        player.announce("#{old_name} is now known as '#{data}'")
-        player.broadcast(:rename_self, data)
-      when 'rename_game'
-        self.name.value = data
-        announce("The game has been renamed '#{data}'")
-        broadcast(:rename_game, data)
-      else
-        puts "Unknown message: #{msg.inspect}"
+      begin
+        player = players[ws]
+        type, data = Msg.parse(msg).values_at('type', 'data')
+        case type
+        when 'create_comment'
+          announce(player.name.value, data['content'])
+        when 'create_move'
+          $redis.lpush "game-moves", "#{id}:#{player.id}:" + data['spec']
+        when 'start'
+          # do starting here
+        when 'invite'
+          invite(data, player.name.value)
+        when 'rename_self'
+          old_name = player.name.value
+          player.name.value = data
+          player.announce("#{old_name} is now known as '#{data}'")
+          player.broadcast(:rename_self, data)
+        when 'rename_game'
+          self.name.value = data
+          announce("The game has been renamed '#{data}'")
+          broadcast(:rename_game, data)
+        else
+          puts "Unknown message: #{msg.inspect}"
+        end
+      rescue => e
+        puts "Error processing message: #{e.inspect}"
       end
     end
 
@@ -82,29 +86,27 @@ module Rt
     end
 
     def handle_move(player_id, pos1, card1, pos2, card2, pos3, card3)
-      @lock.synchronize do
-        if player = players.values.detect { |p| p.id == player_id }
-          announce self.name.value, "#{player.name.value} moved: " + [pos1, card1, pos2, card2, pos3, card3].inspect
-          announce self.name.value, [board[pos1], board[pos2], board[pos3]].inspect
+      if player = get_player_by_id(player_id)
+        @lock.synchronize do
           if board[pos1].to_i == card1 &&
              board[pos2].to_i == card2 &&
              board[pos3].to_i == card3
             # It's a valid move
             if Card.set_index?(card1, card2, card3)
               # It's a set!
-              announce self.name.value, "#{player.name.value} got a set!"
               [pos1, pos2, pos3].each { |pos| board[pos] = deck.pop }
-              #player_scores[player.id] ||= 0
-              #player_scores[player.id] += 1
+              if scores[player.id].present?
+                scores[player.id] = scores[player.id].to_i + 1
+              else
+                scores[player.id] = 1
+              end
+
+              announce self.name.value, "#{player.name.value} got a set!"
               broadcast(:board, board.map(&:to_s).join(":"))
-            else
-              # That wasn't a set!
-              #ws = players.key(player)
-              #ws.send(Msg.say("sorry"))
+              broadcast(:scores, scores.map do |id,score|
+                [id, get_player_by_id(id).name.value, score]
+              end)
             end
-          else
-            # Invalid move
-            announce self.name.value, "#{player.name.value} tried to cheat!"
           end
         end
       end
@@ -139,6 +141,10 @@ module Rt
     end
 
     private
+
+    def get_player_by_id(player_id)
+      players.values.detect { |p| p.id == player_id.to_i }
+    end
 
     def send_board(ws)
       @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }

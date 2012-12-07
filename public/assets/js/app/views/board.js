@@ -24,11 +24,11 @@ function(
         cards: [],
         selected: [],
         sprite_path: '/assets/images/card_sprite.png',
-        card_width: 162,
-        card_height: 252,
-        hightlight: -1,
         highlight_fill_style: "rgba(200,200,200,0.25)",
         selected_fill_style: "rgba(100,100,100,0.5)",
+        hightlight: -1,
+        card_width: 162,
+        card_height: 252,
 
         events: {
             'mouseleave': '_handle_mouse_leave',
@@ -43,7 +43,9 @@ function(
                 this.ctx = this.el.getContext('2d');
                 ImageLoader.add(this.sprite_path, {
                     context: this,
-                    fn: function(img) {}
+                    fn: function(img) {
+                        this.render();
+                    }
                 });
 
                 EventBus.on('conn:msg:board', function(board) {
@@ -139,6 +141,9 @@ function(
             }
         },
 
+        /**
+         * src is card sprite image - 9x9
+         */
         _src_id_to_pix: function(src_id) {
             return {
                 x: (src_id % 9) * this.card_width,
@@ -146,15 +151,14 @@ function(
             };
         },
 
+        /**
+         * dst is canvas - 4x3
+         */
         _dst_id_to_pix: function(dst_id) {
             return {
                 x: (dst_id % 4) * this.card_width,
                 y: Math.floor(dst_id / 4) * this.card_height
             };
-        },
-
-        _src_pix_to_id: function(pos) {
-            // no need for this
         },
 
         _dst_pix_to_id: function(pos) {
