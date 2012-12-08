@@ -2,15 +2,14 @@
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand game-name" href="<%= CONFIG['url'] + '/games/' + @game.id.to_s %>"><%= @game.name.value %></a>
+        <a class="brand game-name" href="<%= CONFIG['url'] %>">Set Game</a>
         <div class="nav-collapse collapse">
           <p id="player" class="navbar-text pull-right">
             Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
           </p>
-          <ul class="nav">
-            <li><a href="#">Pass code: <%= @game.password.value %></a></li>
-            <!-- <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li> -->
+          <ul id="game" class="nav">
+            <li><a id="game-btn" class="game-name" href="#"><%= @game.name.value %></a></li>
+            <li class="navbar-text">Code: <%= @game.password.value %></li>
           </ul>
         </div>
       </div>
@@ -27,6 +26,22 @@
           <div class="well">
             <ul class="comment-list"></ul>
           </ul>
+        </div>
+        <div id="stats">
+            <dl class="stat-list dl-horizontal">
+              <dt>Sets on Board</dt>
+              <dd>
+                <span class="badge badge-warning sets-on-board">
+                  <%= @game.sets_on_board %>
+                </span>
+              </dd>
+              <dt>Cards Remaining</dt>
+              <dd>
+                <span class="badge badge-important cards-remaining">
+                  <%= @game.cards_remaining %>
+                </span>
+              </dd>
+            </dl>
         </div>
         <div id="score-board">
           <div class="well">

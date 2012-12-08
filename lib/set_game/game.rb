@@ -67,7 +67,7 @@ module SetGame
             if data['name'].present? && data['name'] != name.value
               new_name = data['name']
               name.value = new_name
-              announce("The game has been renamed #{new_name}")
+              announce(name.value, "The game has been renamed #{new_name}")
               broadcast(:update_game, { 'name' => new_name })
             end
           end
@@ -150,6 +150,14 @@ module SetGame
 
     def invite(to_email, from_name, msg = nil)
       $inviter.invite!(self.id, to_email, from_name, msg)
+    end
+
+    def sets_on_board
+      Card.count_sets(board.map(&:to_i))
+    end
+
+    def cards_remaining
+      board.length + deck.length
     end
 
     private
