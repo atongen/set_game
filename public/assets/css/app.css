@@ -34,8 +34,18 @@ body {
 .comment-list {
   height: 400px;
   overflow-y: scroll;
+  margin: 0px;
 }
 
 .hero-unit {
   padding: 26px;
+}
+
+.comment {
+  font-size: smaller;
+  margin-bottom: 5px;
+}
+
+.comment .byline {
+  font-weight: bold;
 }

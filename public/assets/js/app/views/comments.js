@@ -14,15 +14,15 @@ function(
   CommentView
 ) {
 
-  var CommentsView = Backbone.View.extend({
+  return Backbone.View.extend({
 
     events: {
-      'click #comment-btn': 'createOnClick'
+      'click #comment-btn': 'create_on_click'
     },
 
     initialize: function() {
       this.input = this.$('#comment');
-      this.collection.bind('add', this.addOne, this);
+      this.collection.bind('add', this.add_one, this);
       this.collection.bind('all', this.render, this);
     },
 
@@ -30,17 +30,17 @@ function(
       return this;
     },
 
-    addOne: function(comment) {
+    add_one: function(comment) {
       var view = new CommentView({ model: comment });
       this.$('.comment-list').append(view.render().el);
       this.$('.comment-list').scrollTop(this.$('.comment-list').prop("scrollHeight"));
     },
 
-    addAll: function() {
+    add_all: function() {
       this.collection.each(this.addOne);
     },
 
-    createOnClick: function(e) {
+    create_on_click: function(e) {
       e.preventDefault();
       var content = this.input.val();
       if ($.trim(content) != "") {
@@ -50,7 +50,5 @@ function(
     }
 
   });
-
-  return CommentsView;
 
 });

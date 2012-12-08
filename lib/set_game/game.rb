@@ -74,7 +74,7 @@ module SetGame
       comment = {
         'author' => author,
         'content' => content,
-        'created_at' => Time.now.to_s
+        'created_at' => Time.now.to_i
       }
       self.comments << comment.to_json
       broadcast(:read_comments, comment)
@@ -114,14 +114,17 @@ module SetGame
 
     def add_player(ws, player)
       self.players[ws] = player
+
+      # send comments to player
+      ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
+
       if self.player_ids.include?(player.id)
         announce(name.value, "#{player.name.value} returned")
       else
         self.player_ids << player.id
         announce(name.value, "#{player.name.value} joined game")
       end
-      # send comments to player
-      ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
+
       # send board to player
       send_board(ws)
       player
