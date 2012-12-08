@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   module Msg
     class << self
 

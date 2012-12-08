@@ -1,9 +1,9 @@
 GAMES = {}
 PLAYERS = {}
 
-require File.expand_path("../lib/rt", __FILE__)
+require File.expand_path("../lib/set_game", __FILE__)
 
-Rt::MoveProcessorGroup.run!
+SetGame::MoveProcessorGroup.run!
 Celluloid::Actor[:move_processor_pool].process!
 
 require 'sinatra'
@@ -19,10 +19,10 @@ helpers do
       if PLAYERS.has_key?(session[:player_id])
         PLAYERS[session[:player_id]]
       else
-        PLAYERS[session[:player_id]] = Rt::Player.find(session[:player_id])
+        PLAYERS[session[:player_id]] = SetGame::Player.find(session[:player_id])
       end
     else
-      player = Rt::Player.new
+      player = SetGame::Player.new
       session[:player_id] = player.id
       PLAYERS[player.id] = player
     end
@@ -32,7 +32,7 @@ helpers do
     if params[:id]
       if GAMES.has_key?(params[:id].to_i)
         GAMES[params[:id].to_i]
-      elsif game = Rt::Game.find(params[:id].to_i)
+      elsif game = SetGame::Game.find(params[:id].to_i)
         GAMES[game.id] = game
       end
     end
@@ -45,7 +45,7 @@ get '/' do
 end
 
 post '/games' do
-  game = Rt::Game.new
+  game = SetGame::Game.new
   GAMES[game.id] = game
   player = get_player
   game.player_ids << player.id

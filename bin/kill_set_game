@@ -1,5 +1,6 @@
 #!/bin/bash
 # Careful, this kills all thins...
+# TODO: allow celluloid to exit gracefully
 
 PROC=`ps aux | grep -i thin`
 if [[ ! -z "$PROC" ]]; then

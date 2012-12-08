@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   class Game
     include Model
 

@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   class Player
     include Model
     value :name

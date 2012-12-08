@@ -4,7 +4,7 @@
  */
 define([
   'underscore',
-  'lib/Dictionary',
+  'lib/Dictionary'
 ],
 
 function(

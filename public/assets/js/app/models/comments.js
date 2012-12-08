@@ -12,10 +12,8 @@ function(
   Comment
 ) {
 
-  var Comments = Backbone.Collection.extend({
+  return Backbone.Collection.extend({
     model: Comment
   });
-
-  return Comments;
 
 });

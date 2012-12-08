@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'pathname'
-RT_ROOT = Pathname.new(File.expand_path('..', __FILE__))
+SET_GAME_ROOT = Pathname.new(File.expand_path('..', __FILE__))
 
 desc "Clean JS"
 task :clean_js do

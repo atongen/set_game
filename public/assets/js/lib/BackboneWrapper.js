@@ -44,7 +44,7 @@ define([
       } else if (!result && _.isFunction(options.error)) {
         options.error.call(null);
       }
-    }
+    };
 
     return Backbone;
   }

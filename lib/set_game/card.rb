@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   class Card
 
     attr_reader :i, :num, :fill, :color, :shape

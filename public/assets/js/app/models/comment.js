@@ -1,7 +1,7 @@
 define([
   'jquery',
   'underscore',
-  'backbone',
+  'backbone'
 ],
 
 function(
@@ -10,7 +10,7 @@ function(
   Backbone
 ) {
 
-  var Comment = Backbone.Model.extend({
+  return Backbone.Model.extend({
 
     type: function() {
       return 'comment';
@@ -24,7 +24,5 @@ function(
       };
     }
   });
-
-  return Comment;
 
 });

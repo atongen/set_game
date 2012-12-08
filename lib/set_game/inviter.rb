@@ -1,6 +1,7 @@
 require 'pony'
 
-module Rt
+module SetGame
+  # TODO: Rename this: Emailer
   class Inviter
     include Celluloid
 

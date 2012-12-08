@@ -1,6 +1,6 @@
-require 'rt/redis_connection'
+require 'set_game/redis_connection'
 
-module Rt
+module SetGame
   class PoolWrapper
 
     attr_reader :redis

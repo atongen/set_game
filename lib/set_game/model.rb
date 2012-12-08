@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   module Model
     def self.included(klass)
       klass.class_eval do

@@ -1,6 +1,6 @@
 require 'pathname'
-RT_ROOT = Pathname.new(File.expand_path('../..', __FILE__))
-$:.unshift(RT_ROOT.join('lib'))
+SET_GAME_ROOT = Pathname.new(File.expand_path('../..', __FILE__))
+$:.unshift(SET_GAME_ROOT.join('lib'))
 
 require 'json'
 require 'time'
@@ -11,24 +11,24 @@ require 'celluloid'
 require 'active_support/lazy_load_hooks'
 require 'active_support/core_ext/string'
 
-config_path = RT_ROOT.join('config', 'rt.yml')
+config_path = SET_GAME_ROOT.join('config', 'set_game.yml')
 if File.file?(config_path)
   CONFIG = YAML::load(File.read(config_path)) || {}
 else
   CONFIG = {}
 end
 
-module Rt
-  autoload :Model,              "rt/model"
-  autoload :Msg,                "rt/msg"
-  autoload :Game,               "rt/game"
-  autoload :Player,             "rt/player"
-  autoload :Card,               "rt/card"
-  autoload :MoveProcessor,      "rt/move_processor"
-  autoload :MoveProcessorGroup, "rt/move_processor_group"
-  autoload :PoolWrapper,        "rt/pool_wrapper"
-  autoload :Inviter,            "rt/inviter"
+module SetGame
+  autoload :Model,              "set_game/model"
+  autoload :Msg,                "set_game/msg"
+  autoload :Game,               "set_game/game"
+  autoload :Player,             "set_game/player"
+  autoload :Card,               "set_game/card"
+  autoload :MoveProcessor,      "set_game/move_processor"
+  autoload :MoveProcessorGroup, "set_game/move_processor_group"
+  autoload :PoolWrapper,        "set_game/pool_wrapper"
+  autoload :Inviter,            "set_game/inviter"
 end
 
-$redis = Rt::PoolWrapper.new
-$inviter = Rt::Inviter.new
+$redis = SetGame::PoolWrapper.new
+$inviter = SetGame::Inviter.new

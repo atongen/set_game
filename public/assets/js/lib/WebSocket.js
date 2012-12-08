@@ -37,11 +37,11 @@ define([
 
           connection.onopen = function() {
             EventBus.trigger("conn:open");
-          }
+          };
 
           connection.onclose = function() {
             EventBus.trigger("conn:close");
-          }
+          };
 
           connection.onmessage = function(e) {
             var m = JSON.parse(e.data);
@@ -49,7 +49,7 @@ define([
             var type = m.type;
             var data = m.data;
             EventBus.trigger("conn:msg:" + type, data)
-          }
+          };
 
           EventBus.on("conn:send", function(type, data) {
             my.send(type, data);
@@ -57,15 +57,15 @@ define([
 
           $(window).unload(function(){ connection.close(); connection = null });
 
-      }
+      };
 
       my.send = function(type, data) {
-        var m = { type: type }
+        var m = { type: type };
         if (data) {
           m.data = data;
         }
         return connection.send(JSON.stringify(m, null, 2))
-      }
+      };
 
       return my;
   }

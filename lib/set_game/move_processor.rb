@@ -1,4 +1,4 @@
-module Rt
+module SetGame
   class MoveProcessor
     include Celluloid
 

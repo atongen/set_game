@@ -3,7 +3,7 @@ require 'redis'
 require 'redis/namespace'
 require 'redis/objects'
 
-module Rt
+module SetGame
   class RedisConnection
     def self.create(options={})
       options = {} unless options.present?

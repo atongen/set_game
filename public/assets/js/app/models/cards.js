@@ -8,7 +8,7 @@ define([
 /**
  * A static class that contains a list of cards
  * Cards should be ordered in the same way as they are
- * ordered in lib/rt/Card.rb
+ * ordered in lib/set_game/Card.rb
  *
  * This allows us to refer to unique cards by ids as ints on both
  * server and client

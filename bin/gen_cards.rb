@@ -6,7 +6,7 @@ require 'RMagick'
 
 RT_ROOT = Pathname.new(File.expand_path(File.join('..', '..'), __FILE__))
 $:.unshift RT_ROOT.join('lib')
-require 'rt/card'
+require 'set_game/card'
 
 PAD = 20
 MAP = "RGB"
