@@ -3,27 +3,31 @@
  */
 {
   shim: {
+    jquery: {
+      exports: 'jquery'
+    },
     websocket: {
         deps: ['jquery'],
         exports: 'websocket'
     },
     bootstrap: {
-      deps: ['jquery'],
-      exports: 'bootstrap'
+        deps: ['jquery'],
+        exports: 'bootstrap'
+    },
+    json: {
+      exports: 'json'
     }
   },
   baseUrl: '.',
   paths: {
-      main:        'main',
-      application: 'application',
-      domReady:    'vendor/domReady',
-      text:        'vendor/text',
-      jquery:      'vendor/jquery',
-      websocket:   'vendor/jquery.websocket',
-      json:        'vendor/json2',
-      underscore:  'vendor/underscore',
-      bootstrap:   'vendor/bootstrap',
-      backbone:    'vendor/backbone'
+      domReady:        'vendor/domReady',
+      text:            'vendor/text',
+      jquery:          'vendor/jquery',
+      json:            'vendor/json2',
+      underscore:      'vendor/underscore',
+      bootstrap:       'vendor/bootstrap',
+      backbone_vendor: 'vendor/backbone',
+      backbone:        'lib/BackboneWrapper'
   },
   name: 'main',
   out:  'main-built.js'
