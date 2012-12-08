@@ -2,6 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
+  'lib/EventBus',
   'app/models/comment',
   'app/views/comment'
 ],
@@ -10,6 +11,7 @@ function(
   $,
   _,
   Backbone,
+  EventBus,
   Comment,
   CommentView
 ) {
@@ -24,6 +26,10 @@ function(
       this.input = this.$('#comment');
       this.collection.bind('add', this.add_one, this);
       this.collection.bind('all', this.render, this);
+
+      EventBus.on('conn:msg:read_comments', function(data) {
+        this.collection.add(data);
+      }, this);
     },
 
     render: function() {

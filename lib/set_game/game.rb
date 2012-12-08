@@ -53,15 +53,24 @@ module SetGame
           # do starting here
         when 'invite'
           invite(data, player.name.value)
-        when 'rename_self'
-          old_name = player.name.value
-          player.name.value = data
-          player.announce("#{old_name} is now known as '#{data}'")
-          player.broadcast(:rename_self, data)
-        when 'rename_game'
-          self.name.value = data
-          announce("The game has been renamed '#{data}'")
-          broadcast(:rename_game, data)
+        when 'update_player'
+          if data['name'].present? && data['name'] != player.name.value
+            old_name = player.name.value
+            new_name = data['name']
+            player.name.value = new_name
+            player.announce(name.value, "#{old_name} is now known as #{new_name}")
+            player.broadcast(:update_player, { 'name' => new_name })
+          end
+        when 'update_game'
+          # only creator can update game
+          if player.id == creator_id.value.to_i
+            if data['name'].present? && data['name'] != name.value
+              new_name = data['name']
+              name.value = new_name
+              announce("The game has been renamed #{new_name}")
+              broadcast(:update_game, { 'name' => new_name })
+            end
+          end
         else
           puts "Unknown message: #{msg.inspect}"
         end

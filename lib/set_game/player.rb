@@ -12,8 +12,8 @@ module SetGame
       self.games = {}
     end
 
-    def announce(msg)
-      games.values.each { |game| game.announce(msg) }
+    def announce(author, msg)
+      games.values.each { |game| game.announce(author, msg) }
     end
 
     def broadcast(key, data)

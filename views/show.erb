@@ -2,10 +2,10 @@
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand" href="<%= CONFIG['url'] + '/games/' + @game.id.to_s %>"><%= @game.name.value %></a>
+        <a class="brand game-name" href="<%= CONFIG['url'] + '/games/' + @game.id.to_s %>"><%= @game.name.value %></a>
         <div class="nav-collapse collapse">
-          <p class="navbar-text pull-right">
-          Welcome <strong id="player_name"><%= get_player.name.value %></strong>
+          <p id="player" class="navbar-text pull-right">
+            Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
           </p>
           <ul class="nav">
             <li><a href="#">Pass code: <%= @game.password.value %></a></li>
@@ -44,4 +44,5 @@
     </div>
   </div>
   <%= erb :footer %>
+  <div id="modal"></div>
 </body>

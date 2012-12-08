@@ -29,7 +29,6 @@ function(
     timestamp: function() {
         var d = new Date(0);
         d.setUTCSeconds(this.get('created_at'));
-        console.log(DateFormat);
         return DateFormat.format(d, 'shortTime');
     }
 

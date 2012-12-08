@@ -1,57 +1,74 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'lib/EventBus',
-  'lib/WebSocket',
-  'app/models/comments',
-  'app/views/comments',
-  'app/views/board'
+    'jquery',
+    'underscore',
+    'backbone',
+    'lib/WebSocket',
+    'app/models/game',
+    'app/models/player',
+    'app/models/comments',
+    'app/views/game',
+    'app/views/player',
+    'app/views/comments',
+    'app/views/board'
 ],
 
 function(
-  $,
-  _,
-  Backbone,
-  EventBus,
-  WebSocket,
-  CommentsCollection,
-  CommentsView,
-  BoardView
+    $,
+    _,
+    Backbone,
+    WebSocket,
+    Game,
+    Player,
+    Comments,
+    GameView,
+    PlayerView,
+    CommentsView,
+    BoardView
 ) {
 
-  return Backbone.View.extend({
+    return Backbone.View.extend({
 
-    el: $('body'),
-    game_id: null,
-    comments: null,
-    boardView: null,
+        el: $('body'),
 
-    initialize: function(options) {
-      _.bindAll(this);
-      this.game_id = options.game_id;
+        initialize: function(options) {
+            _.bindAll(this);
 
-      /**
-       * Setup comments
-       */
-      this.comments = new CommentsCollection();
-      new CommentsView({
-        el: '#comments',
-        collection: this.comments
-      });
-      EventBus.on('conn:msg:read_comments', function(data) {
-        this.comments.add(data);
-      }, this);
+            /**
+             * Setup game
+             */
+            this.game = new Game({ id: options.game_id });
+            new GameView({
+                el: '#game',
+                model: this.game
+            });
 
-      /**
-       * Setup board
-       */
-      this.boardView = new BoardView({ el: '#board' });
+            /**
+             * Setup player
+             */
+            this.player = new Player({ id: options.player_id });
+            new PlayerView({
+                el: '#player',
+                model: this.player
+            });
 
-      /**
-       * Initialize the websocket connection
-       */
-      WebSocket.init();
-    }
-  });
+            /**
+             * Setup comments
+             */
+            this.comments = new Comments();
+            new CommentsView({
+                el: '#comments',
+                collection: this.comments
+            });
+
+            /**
+             * Setup board
+             */
+            this.boardView = new BoardView({ el: '#board' });
+
+            /**
+             * Initialize the websocket connection
+             */
+            WebSocket.init();
+        }
+    });
 });

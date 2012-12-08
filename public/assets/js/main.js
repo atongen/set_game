@@ -32,19 +32,25 @@ require.config({
 });
 
 require([
-  'jquery',
-  'domReady',
-  'app/views/app'
+    'jquery',
+    'domReady',
+    'app/views/app'
 ],
+
 function (
-  $,
-  domReady,
-  AppView
+    $,
+    domReady,
+    AppView
 ) {
-  domReady(function () {
-    var game_id = $('body').data('game-id');
-    if (game_id) {
-      new AppView({ game_id: game_id });
-    }
-  });
+
+    domReady(function () {
+        var game_id = $('body').data('game-id');
+        if (game_id) {
+            var player_id = $('body').data('player-id');
+            new AppView({
+                game_id:   game_id,
+                player_id: player_id
+            });
+        }
+    });
 });
