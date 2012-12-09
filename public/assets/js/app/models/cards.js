@@ -38,11 +38,15 @@ function(
          * Takes three ids and returns bool if set or not
          */
         is_set: function(id1, id2, id3) {
-            return this._is_card_set(
-                this.get(id1),
-                this.get(id2),
-                this.get(id3)
-            );
+            if (_.all([id1, id2, id3], function(id) { return 0 <= id && id < 81; })) {
+                return this._is_card_set(
+                    this.get(id1),
+                    this.get(id2),
+                    this.get(id3)
+                );
+            } else {
+                return false;
+            }
         },
 
         /**
@@ -50,7 +54,8 @@ function(
          * and count the number of sets
          */
         count_sets: function(indexes) {
-            var l = indexes.length;
+            var idx = _.compact(indexes);
+            var l = idx.length;
             if (l < 3) {
                 return 0;
             }
@@ -59,10 +64,7 @@ function(
             for (var i = 0; i <= l - 3; i++) {
                 for (var j = i + 1; j <= l - 2; j++) {
                     for (var k = j + 1; k <= l - 1; k++) {
-                        if (this._is_card_set(
-                                this.get(indexes[i]),
-                                this.get(indexes[j]),
-                                this.get(indexes[k]))) {
+                        if (this.is_set(idx[i], idx[j], idx[k])) {
                             sets += 1;
                         }
                     }

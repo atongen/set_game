@@ -166,11 +166,11 @@ module SetGame
     end
 
     def sets_on_board
-      Card.count_sets(board.map(&:to_i))
+      Card.count_sets(board.map { |b| b.present? ? b.to_i : nil })
     end
 
     def cards_remaining
-      board.length + deck.length
+      board.select { |b| b.present? }.length + deck.length
     end
 
     private

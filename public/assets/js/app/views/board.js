@@ -75,7 +75,8 @@ function(
         set_board: function(board) {
             var selected = [];
             var new_board = _.map(board.split(':'), function(card) {
-                return parseInt(card, 10);
+                var n = parseInt(card, 10);
+                return _.isNaN(n) ? -1 : n;
             }, this);
             _.each(this.selected, function(idx) {
                 if (new_board[idx] == this.board[idx]) {
@@ -107,7 +108,8 @@ function(
             if (idx >= 0) {
                 // card is already selected, de-select it
                 this.selected.splice(idx, 1);
-            } else if (this.selected.length < 3) {
+                this.render();
+            } else if (this.selected.length < 3 && this.board[dst_id] > 0) {
                 this.selected.push(dst_id);
                 if (this.selected.length == 3) {
                     // get the id's of the selected cards
@@ -124,8 +126,8 @@ function(
                         this.selected = [];
                     }
                 }
+                this.render();
             }
-            this.render();
         },
 
         _handle_mouse_leave: function(e) {
@@ -138,7 +140,11 @@ function(
         _handle_mouse_move: function(e) {
             var highlight = this._dst_pix_to_id(this._mouse_pos(e));
             if (highlight != this.highlight) {
-                this.highlight = highlight;
+                if (this.board[highlight] > 0) {
+                    this.highlight = highlight;
+                } else {
+                    this.highlight = -1;
+                }
                 this.render();
             }
         },
