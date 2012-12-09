@@ -28,26 +28,22 @@
           </ul>
         </div>
         <div id="stats">
-            <dl class="stat-list dl-horizontal">
-              <dt>Sets on Board</dt>
-              <dd>
-                <span class="badge badge-warning sets-on-board">
-                  <%= @game.sets_on_board %>
-                </span>
-              </dd>
-              <dt>Cards Remaining</dt>
-              <dd>
-                <span class="badge badge-important cards-remaining">
-                  <%= @game.cards_remaining %>
-                </span>
-              </dd>
-            </dl>
+          <dl class="stat-list dl-horizontal">
+            <dt>Sets on Board</dt>
+            <dd>
+              <span class="badge badge-inverse sets-on-board">
+                <%= @game.sets_on_board %>
+              </span>
+            </dd>
+            <dt>Cards Remaining</dt>
+            <dd>
+              <span class="badge badge-inverse cards-remaining">
+                <%= @game.cards_remaining %>
+              </span>
+            </dd>
+          </dl>
         </div>
-        <div id="score-board">
-          <div class="well">
-            <ul class="score-board-list"></ul>
-          </div>
-        </div>
+        <div id="score-box"></div>
       </div>
     </div>
     <div class="span9">

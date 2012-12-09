@@ -16,10 +16,8 @@ function(
             return 'game';
         },
 
-        defaults: function() {
-            return {
-                name: "Game #" + this.id
-            };
+        defaults: {
+            name: null
         }
     });
 });

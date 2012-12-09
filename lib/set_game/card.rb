@@ -113,15 +113,16 @@ module SetGame
     end
 
     def self.find_sets(*indexes)
-      cards = DECK.values_at(*indexes)
+      l = indexes.length
       sets = []
-      l = cards.length
-      if cards.length >= 3
+      return sets if l < 3
+
+      if l >= 3
         (0..(l-3)).each do |i|
           ((i+1)..(l-2)).each do |j|
             ((j+1)..(l-1)).each do |k|
-              if set?(cards[i], cards[j], cards[k])
-                sets << [cards[i], cards[j], cards[k]]
+              if set?(DECK[indexes[i]], DECK[indexes[j]], DECK[indexes[k]])
+                sets << [indexes[i], indexes[j], indexes[k]]
               end
             end
           end
@@ -131,14 +132,15 @@ module SetGame
     end
 
     def self.count_sets(indexes)
-      cards = DECK.values_at(*indexes)
+      l = indexes.length
+      return 0 if l < 3
+
       sets = 0
-      l = cards.length
-      if cards.length >= 3
+      if l >= 3
         (0..(l-3)).each do |i|
           ((i+1)..(l-2)).each do |j|
             ((j+1)..(l-1)).each do |k|
-              if set?(cards[i], cards[j], cards[k])
+              if set?(DECK[indexes[i]], DECK[indexes[j]], DECK[indexes[k]])
                 sets += 1
               end
             end

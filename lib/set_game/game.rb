@@ -17,8 +17,13 @@ module SetGame
     list :comments
     hash_key :scores
     value :creator_id
+    set :stalled_player_ids
 
-    attr_accessor :players
+    # players by ws tracks active web socket connections
+    attr_accessor :players_by_ws
+
+    # players by id tracks all players who have ever been in the game
+    attr_accessor :players_by_id
 
     BOARD_SIZE = 12
 
@@ -33,8 +38,14 @@ module SetGame
         self.name.value = "Game ##{@id}"
       end
 
-      # ws can't be stored in redis...
-      self.players = {}
+      self.players_by_ws = {}
+      self.players_by_id = player_ids.inject({}) do |players, id|
+        if p = SetGame::Player.find(id.to_i)
+          players[p.id.to_i] = p
+        end
+        players
+      end
+
       @lock = Mutex.new
       touch
     end
@@ -42,41 +53,36 @@ module SetGame
     def handle(ws, msg)
       touch
       begin
-        player = players[ws]
-        type, data = Msg.parse(msg).values_at('type', 'data')
-        case type
-        when 'create_comment'
-          announce(player.name.value, data['content'])
-        when 'create_move'
-          $redis.lpush "game-moves", "#{id}:#{player.id}:" + data['spec']
-        when 'start'
-          # do starting here
-        when 'invite'
-          invite(data, player.name.value)
-        when 'update_player'
-          if data['name'].present? && data['name'] != player.name.value
-            old_name = player.name.value
-            new_name = data['name']
-            player.name.value = new_name
-            player.announce(name.value, "#{old_name} is now known as #{new_name}")
-            player.broadcast(:update_player, { 'name' => new_name })
-          end
-        when 'update_game'
-          # only creator can update game
-          if player.id == creator_id.value.to_i
-            if data['name'].present? && data['name'] != name.value
+        if player = players_by_ws[ws]
+          type, data = Msg.parse(msg).values_at('type', 'data')
+          case type
+          when 'create_comment'
+            announce(player.name.value, data['content'])
+          when 'create_move'
+            $redis.lpush "game-moves", "#{id}:#{player.id}:" + data['spec']
+          when 'update_player'
+            if data['name'].present? && data['name'] != player.name.value
+              old_name = player.name.value
               new_name = data['name']
-              name.value = new_name
-              announce(name.value, "The game has been renamed #{new_name}")
-              broadcast(:update_game, {
-                'name' => new_name,
-                'cards_remaining' => cards_remaining,
-                'sets_on_board' => sets_on_board
-              })
+              player.name.value = new_name
+              player.announce(name.value, "#{old_name} is now known as #{new_name}")
+              player.broadcast(:update_player, { 'name' => new_name })
             end
+          when 'update_game'
+            # only creator can update game
+            if player.id == creator_id.value.to_i
+              if data['name'].present? && data['name'] != name.value
+                new_name = data['name']
+                name.value = new_name
+                announce(name.value, "The game has been renamed #{new_name}")
+                broadcast(:update_game, { 'name' => new_name })
+              end
+            end
+          else
+            puts "Unknown message: #{msg.inspect}"
           end
         else
-          puts "Unknown message: #{msg.inspect}"
+          puts "Player web socket connection not found"
         end
       rescue => e
         puts "Error processing message: #{e.inspect}"
@@ -95,11 +101,11 @@ module SetGame
 
     def broadcast(key, data)
       obj = Msg.send(key, data)
-      players.keys.each { |ws| ws.send(obj) }
+      players_by_ws.keys.each { |ws| ws.send(obj) }
     end
 
     def handle_move(player_id, pos1, card1, pos2, card2, pos3, card3)
-      if player = get_player_by_id(player_id)
+      if player = players_by_id[player_id]
         @lock.synchronize do
           if board[pos1].to_i == card1 &&
              board[pos2].to_i == card2 &&
@@ -108,21 +114,14 @@ module SetGame
             if Card.set_index?(card1, card2, card3)
               # It's a set!
               [pos1, pos2, pos3].each { |pos| board[pos] = deck.pop }
-              if scores[player.id].present?
-                scores[player.id] = scores[player.id].to_i + 1
-              else
-                scores[player.id] = 1
-              end
+              increment_score(player.id)
 
               announce self.name.value, "#{player.name.value} got a set!"
-              broadcast(:board, board.map(&:to_s).join(":"))
-              broadcast(:scores, scores.map do |id,score|
-                [id, get_player_by_id(id).name.value, score]
-              end)
+              broadcast(:update_board, board.map(&:to_s).join(":"))
+              broadcast(:update_score_box, score_box_data)
               broadcast(:update_game, {
                 'name' => name.value,
                 'cards_remaining' => cards_remaining,
-                'sets_on_board' => sets_on_board
               })
             end
           end
@@ -131,7 +130,8 @@ module SetGame
     end
 
     def add_player(ws, player)
-      self.players[ws] = player
+      self.players_by_ws[ws] = player
+      self.players_by_id[player.id.to_i] = player
 
       # send comments to player
       ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
@@ -140,25 +140,29 @@ module SetGame
         announce(name.value, "#{player.name.value} returned")
       else
         self.player_ids << player.id
+        increment_score(player.id, 0)
         announce(name.value, "#{player.name.value} joined game")
       end
 
-      # send board to player
-      send_board(ws)
+      # lock so we can send initial board state to added player
+      @lock.synchronize do
+        ws.send Msg.update_board(board.map(&:to_s).join(":"))
+        broadcast(:update_score_box, score_box_data)
+      end
+
       player
     end
 
     def remove_player(ws)
-      if player = players[ws]
-        player_name = player.name.value
-        players.delete(player)
-        announce(name.value, "#{player_name} left game")
+      if player = players_by_ws.delete(ws)
+        announce(name.value, "#{player.name.value} left game")
+        @lock.synchronize { broadcast(:update_score_box, score_box_data) }
         ws
       end
     end
 
     def invite(to_email, from_name, msg = nil)
-      $inviter.invite!(self.id, to_email, from_name, msg)
+      $emailer.invite(self.id, to_email, from_name, msg)
     end
 
     def sets_on_board
@@ -171,16 +175,44 @@ module SetGame
 
     private
 
-    def get_player_by_id(player_id)
-      players.values.detect { |p| p.id == player_id.to_i }
-    end
-
-    def send_board(ws)
-      @lock.synchronize { ws.send Msg.board(board.map(&:to_s).join(":")) }
-    end
-
     def touch
       self.last_activity_at = Time.now.to_f
+    end
+
+    def increment_score(player_id, n = 1)
+      if scores[player_id].present?
+        scores[player_id] = scores[player_id].to_i + n
+      else
+        scores[player_id] = n
+      end
+    end
+
+    def score_box_data
+      active_ids = players_by_ws.values.map(&:id)
+      data = players_by_id.map do |id, player|
+        # statuses correspond to twitter bootstrap badge styles
+        # not ideal...
+        status = if active_ids.include?(id)
+          # connected player
+          if stalled_player_ids.include?(id)
+            # stalled player
+            'warning'
+          else
+            # normal player
+            'success'
+          end
+        else
+          # disconnected player
+          'important'
+        end
+        { :id     => id,
+          :name   => player.name.value,
+          :score  => (scores[player.id] || '0').to_i,
+          :status => status
+        }
+      end
+      # sort by score first, and name second
+      data.sort { |x,y| [y[2], x[1]] <=> [x[2], y[1]] }
     end
   end
 end

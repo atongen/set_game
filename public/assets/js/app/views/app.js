@@ -9,7 +9,8 @@ define([
     'app/views/game',
     'app/views/player',
     'app/views/comments',
-    'app/views/board'
+    'app/views/board',
+    'app/views/score_box'
 ],
 
 function(
@@ -23,7 +24,8 @@ function(
     GameView,
     PlayerView,
     CommentsView,
-    BoardView
+    BoardView,
+    ScoreBoxView
 ) {
 
     return Backbone.View.extend({
@@ -63,7 +65,15 @@ function(
             /**
              * Setup board
              */
-            this.boardView = new BoardView({ el: '#board' });
+            new BoardView({
+                el: '#board',
+                game: this.game
+            });
+
+            /**
+             * Setup score box
+             */
+            new ScoreBoxView({ el: '#score-box' });
 
             /**
              * Initialize the websocket connection

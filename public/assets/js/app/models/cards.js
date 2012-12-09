@@ -27,15 +27,55 @@ function(
     var Cards = Backbone.Collection.extend({
         model: Card,
 
+        /**
+         * By default, cards are ordered by id
+         */
         compararator: function(card) {
             return card.get("id");
         },
 
+        /**
+         * Takes three ids and returns bool if set or not
+         */
         is_set: function(id1, id2, id3) {
-            var c1 = this.get(id1);
-            var c2 = this.get(id2);
-            var c3 = this.get(id3);
+            return this._is_card_set(
+                this.get(id1),
+                this.get(id2),
+                this.get(id3)
+            );
+        },
 
+        /**
+         * Loop through all combinations of the card ids given as arguments
+         * and count the number of sets
+         */
+        count_sets: function(indexes) {
+            var l = indexes.length;
+            if (l < 3) {
+                return 0;
+            }
+
+            var sets = 0;
+            for (var i = 0; i <= l - 3; i++) {
+                for (var j = i + 1; j <= l - 2; j++) {
+                    for (var k = j + 1; k <= l - 1; k++) {
+                        if (this._is_card_set(
+                                this.get(indexes[i]),
+                                this.get(indexes[j]),
+                                this.get(indexes[k]))) {
+                            sets += 1;
+                        }
+                    }
+                }
+            }
+            return sets;
+        },
+
+        /**
+         * Internal method, takes 3 card models and returns
+         * bool if set or not
+         */
+        _is_card_set: function(c1, c2, c3) {
             return _.all(['num', 'fill', 'color', 'shape'], function(attr) {
                 return ((
                     // either all attributes are the same...

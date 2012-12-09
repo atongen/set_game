@@ -47,8 +47,9 @@ function(
                         this.render();
                     }
                 });
+                this.game = options.game;
 
-                EventBus.on('conn:msg:board', function(board) {
+                EventBus.on('conn:msg:update_board', function(board) {
                     this.set_board(board);
                     this.render();
                 }, this);
@@ -84,6 +85,7 @@ function(
             }, this);
             this.selected = selected;
             this.board = new_board;
+            this.game.set({ sets_on_board: Cards.count_sets(this.board) });
         },
 
         _draw_card: function(src_id, dst_id) {

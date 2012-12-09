@@ -1,0 +1,10 @@
+<dl class="stat-list dl-horizontal">
+  <% _.each(data, function(item) { %>
+  <dt id="player-<%= item.id %>"><%= item.name %></dt>
+  <dd>
+    <span class="badge badge-<%= item.status %> score">
+      <%= item.score %>
+    </span>
+  </dd>
+  <% }); %>
+</dl>

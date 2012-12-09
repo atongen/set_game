@@ -11,7 +11,7 @@ require 'sinatra-websocket'
 
 set :server, 'thin'
 enable :sessions
-set :protection, except: :session_hijacking
+set :protection, :except => :session_hijacking
 
 helpers do
   def get_player
@@ -19,10 +19,11 @@ helpers do
       if PLAYERS.has_key?(session[:player_id])
         PLAYERS[session[:player_id]]
       else
-        PLAYERS[session[:player_id]] = SetGame::Player.find(session[:player_id])
+        PLAYERS[session[:player_id]] = SetGame::Player.find(session[:player_id].to_i)
       end
     else
       player = SetGame::Player.new
+      SetGame::Stats.increment_num_players
       session[:player_id] = player.id
       PLAYERS[player.id] = player
     end
@@ -50,6 +51,7 @@ post '/games' do
   player = get_player
   game.player_ids << player.id
   game.creator_id.value = player.id
+  SetGame::Stats.increment_num_games
   redirect to("/games/#{game.id}")
 end
 

@@ -27,8 +27,9 @@ module SetGame
   autoload :MoveProcessor,      "set_game/move_processor"
   autoload :MoveProcessorGroup, "set_game/move_processor_group"
   autoload :PoolWrapper,        "set_game/pool_wrapper"
-  autoload :Inviter,            "set_game/inviter"
+  autoload :Emailer,            "set_game/emailer"
+  autoload :Stats,              "set_game/stats"
 end
 
 $redis = SetGame::PoolWrapper.new
-$inviter = SetGame::Inviter.new
+$emailer = SetGame::Emailer.new
