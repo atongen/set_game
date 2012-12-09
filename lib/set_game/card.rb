@@ -118,13 +118,11 @@ module SetGame
       sets = []
       return sets if l < 3
 
-      if l >= 3
-        (0..(l-3)).each do |i|
-          ((i+1)..(l-2)).each do |j|
-            ((j+1)..(l-1)).each do |k|
-              if set?(DECK[idx[i]], DECK[idx[j]], DECK[idx[k]])
-                sets << [idx[i], idx[j], idx[k]]
-              end
+      (0..(l-3)).each do |i|
+        ((i+1)..(l-2)).each do |j|
+          ((j+1)..(l-1)).each do |k|
+            if set?(DECK[idx[i]], DECK[idx[j]], DECK[idx[k]])
+              sets << [idx[i], idx[j], idx[k]]
             end
           end
         end
@@ -138,18 +136,34 @@ module SetGame
       return 0 if l < 3
 
       sets = 0
-      if l >= 3
-        (0..(l-3)).each do |i|
-          ((i+1)..(l-2)).each do |j|
-            ((j+1)..(l-1)).each do |k|
-              if set?(DECK[idx[i]], DECK[idx[j]], DECK[idx[k]])
-                sets += 1
-              end
+      (0..(l-3)).each do |i|
+        ((i+1)..(l-2)).each do |j|
+          ((j+1)..(l-1)).each do |k|
+            if set?(DECK[idx[i]], DECK[idx[j]], DECK[idx[k]])
+              sets += 1
             end
           end
         end
       end
       sets
     end
+
+    def self.set_exists?(indexes)
+      idx = indexes.compact
+      l = idx.length
+      return false if l < 3
+
+      (0..(l-3)).each do |i|
+        ((i+1)..(l-2)).each do |j|
+          ((j+1)..(l-1)).each do |k|
+            if set?(DECK[idx[i]], DECK[idx[j]], DECK[idx[k]])
+              return true
+            end
+          end
+        end
+      end
+      false
+    end
+
   end
 end

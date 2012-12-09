@@ -14,10 +14,6 @@ function(
 
         type: function() {
             return 'game';
-        },
-
-        defaults: {
-            name: null
         }
     });
 });

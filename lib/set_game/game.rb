@@ -4,6 +4,7 @@ module SetGame
 
     # States:
     # new
+    # waiting
     # started
     # complete
     value :state
@@ -18,6 +19,7 @@ module SetGame
     hash_key :scores
     value :creator_id
     set :stalled_player_ids
+    set :ready_player_ids
 
     # players by ws tracks active web socket connections
     attr_accessor :players_by_ws
@@ -78,6 +80,25 @@ module SetGame
                 broadcast(:update_game, { 'name' => new_name })
               end
             end
+            # player is ready to start game
+            if new_game? && data['state'] == 'started'
+              ready_player_ids << player.id
+              not_ready = players_by_ws.values.map(&:id).map(&:to_i) - ready_player_ids.members.map(&:to_i)
+              if not_ready.blank?
+                # all connected players are ready to start game
+                state.value = 'started'
+                broadcast(:update_game, {
+                  'cards_remaining' => cards_remaining,
+                  'state' => state.value
+                })
+                broadcast(:update_board, board.map(&:to_s).join(":"))
+                broadcast(:update_score_box, score_box_data)
+                announce(name.value, "The game has started!")
+              else
+                announce(name.value, "#{player.name.value} is ready to start.")
+                ws.send(Msg.update_game({ 'state' => 'waiting' }))
+              end
+            end
           else
             puts "Unknown message: #{msg.inspect}"
           end
@@ -104,25 +125,44 @@ module SetGame
       players_by_ws.keys.each { |ws| ws.send(obj) }
     end
 
-    def handle_move(player_id, pos1, card1, pos2, card2, pos3, card3)
+    def handle_move(player_id, idx1, id1, idx2, id2, idx3, id3)
       if player = players_by_id[player_id]
         @lock.synchronize do
-          if board[pos1].to_i == card1 &&
-             board[pos2].to_i == card2 &&
-             board[pos3].to_i == card3
+          if board[idx1].to_i == id1 &&
+             board[idx2].to_i == id2 &&
+             board[idx3].to_i == id3
             # It's a valid move
-            if Card.set_index?(card1, card2, card3)
+            if Card.set_index?(id1, id2, id3)
               # It's a set!
-              [pos1, pos2, pos3].each { |pos| board[pos] = deck.pop }
+              [idx1, idx2, idx3].each { |pos| board[pos] = deck.pop }
               increment_score(player.id)
 
-              announce self.name.value, "#{player.name.value} got a set!"
+              stalled_player_ids = []
+
+              announce(name.value, "#{player.name.value} got a set!")
               broadcast(:update_board, board.map(&:to_s).join(":"))
               broadcast(:update_score_box, score_box_data)
-              broadcast(:update_game, {
-                'name' => name.value,
-                'cards_remaining' => cards_remaining,
-              })
+
+              if !Card.set_exists?((board.values + deck.values).map(&:to_i).compact)
+                # the game is over
+                state.value = 'complete'
+                broadcast(:update_game, {
+                  'state' => state.value,
+                  'cards_remaining' => cards_remaining
+                })
+
+                # declare the winner(s)
+                sbx = score_box_data
+                winning_score = sbx.first['score']
+                winners = sbx.select { |s| s['score'] == winning_score }
+                if winners.length == 1
+                  announce(name.value, winners.first['name'] + ' won the game!')
+                else
+                  announce(name.value, winners.map { |w| w['name'] }.join(' and ') + ' tied for the win!')
+                end
+              else
+                broadcast(:update_game, { 'cards_remaining' => cards_remaining })
+              end
             end
           end
         end
@@ -136,17 +176,22 @@ module SetGame
       # send comments to player
       ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
 
-      if self.player_ids.include?(player.id)
-        announce(name.value, "#{player.name.value} returned")
-      else
-        self.player_ids << player.id
-        increment_score(player.id, 0)
-        announce(name.value, "#{player.name.value} joined game")
+      if !completed?
+        if self.player_ids.include?(player.id)
+          announce(name.value, "#{player.name.value} returned")
+        else
+          self.player_ids << player.id
+          increment_score(player.id, 0)
+          announce(name.value, "#{player.name.value} joined game")
+        end
       end
 
+      ws.send(Msg.update_game({ 'state' => state.value, 'creator_id' => creator_id.value.to_i }))
       # lock so we can send initial board state to added player
       @lock.synchronize do
-        ws.send Msg.update_board(board.map(&:to_s).join(":"))
+        unless new_game?
+          ws.send Msg.update_board(board.map(&:to_s).join(":"))
+        end
         broadcast(:update_score_box, score_box_data)
       end
 
@@ -155,8 +200,10 @@ module SetGame
 
     def remove_player(ws)
       if player = players_by_ws.delete(ws)
-        announce(name.value, "#{player.name.value} left game")
-        @lock.synchronize { broadcast(:update_score_box, score_box_data) }
+        if !completed?
+          announce(name.value, "#{player.name.value} left game")
+          @lock.synchronize { broadcast(:update_score_box, score_box_data) }
+        end
         ws
       end
     end
@@ -171,6 +218,22 @@ module SetGame
 
     def cards_remaining
       board.select { |b| b.present? }.length + deck.length
+    end
+
+    def new_game?
+      state.value == 'new'
+    end
+
+    def started?
+      state.value == 'started'
+    end
+
+    def waiting?
+      state.value == 'waiting'
+    end
+
+    def completed?
+      state.value == 'completed'
     end
 
     private

@@ -36,21 +36,27 @@ function(
             _.bindAll(this);
 
             /**
-             * Setup game
+             * Setup game and player models
              */
             this.game = new Game({ id: options.game_id });
+            this.player = new Player({ id: options.player_id });
+
+            /**
+             * Setup game view
+             */
             new GameView({
                 el: '#game',
-                model: this.game
+                model: this.game,
+                player: this.player
             });
 
             /**
-             * Setup player
+             * Setup player view
              */
-            this.player = new Player({ id: options.player_id });
             new PlayerView({
                 el: '#player',
-                model: this.player
+                model: this.player,
+                game: this.game
             });
 
             /**

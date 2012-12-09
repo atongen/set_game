@@ -11,13 +11,8 @@ function(
 ) {
 
     return Backbone.Model.extend({
-
         type: function() {
             return 'player';
-        },
-
-        defaults: {
-            name: null
         }
     });
 });

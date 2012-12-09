@@ -20,9 +20,9 @@ function(
             'click #game-btn': 'trigger_game_name_modal'
         },
 
-        initialize: function() {
+        initialize: function(options) {
             _.bindAll(this);
-            this.model.bind('change', this.update_game);
+            this.player = options.player;
 
             /**
              * Setup modal
@@ -39,6 +39,7 @@ function(
 
             EventBus.on('conn:msg:update_game', function(data) {
                 this.model.set(data);
+                this.update_game();
             }, this);
         },
 
@@ -59,20 +60,52 @@ function(
             if (cards_remaining) {
                 $('.cards-remaining').text(cards_remaining);
             }
+            var state = this.model.get('state');
+            if (state) {
+                // game state has changed
+                if (state == 'new') {
+                    var btn = $('<button>', { class: 'btn btn-success btn-large btn-block btn-start' });
+                    btn.text("Start Game");
+                    var model = this.model;
+                    btn.on('click', function(e) {
+                        e.preventDefault();
+                        model.set({ state: 'started' });
+                        model.save();
+                    });
+                    $('#status-btn').html(btn);
+                } else if (state == 'waiting') {
+                    var btn = $('<button>', { class: 'btn btn-warning btn-large btn-block btn-wait' });
+                    btn.text("Waiting to Start");
+                    $('#status-btn').html(btn);
+                } else if (state == 'started') {
+                    $('#status-btn').html("");
+                } else if (state == 'completed') {
+                    // do something here when game is complete?
+                }
+            }
         },
 
         trigger_game_name_modal: function(e) {
             e.preventDefault();
-            this.modal.render();
+            if (this._is_creator()) {
+                this.modal.render();
+            }
         },
 
         change_game_name: function(content) {
-            var name = content.find('input#game-name-field').val();
-            if ($.trim(name) != "") {
-                this.model.set({ name: name });
-                this.model.save();
-                this.modal.close();
+            if (this._is_creator()) {
+                var name = content.find('input#game-name-field').val();
+                if ($.trim(name) != "") {
+                    this.model.set({ name: name });
+                    this.model.save();
+                    this.update_game();
+                    this.modal.close();
+                }
             }
+        },
+
+        _is_creator: function() {
+            return this.player.get('id') == this.model.get('creator_id');
         }
     });
 

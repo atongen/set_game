@@ -21,7 +21,7 @@ function(
     return Backbone.View.extend({
 
         ctx: null,
-        cards: [],
+        board: [],
         selected: [],
         sprite_path: '/assets/images/card_sprite.png',
         highlight_fill_style: "rgba(200,200,200,0.25)",
@@ -57,7 +57,6 @@ function(
         },
 
         render: function() {
-            //console.log("rendering board");
             // draw card for each board slot
             _.each(this.board, function(card_id, i) {
                 this._draw_card(card_id, i);
