@@ -68,7 +68,11 @@ module SetGame
               new_name = data['name']
               name.value = new_name
               announce(name.value, "The game has been renamed #{new_name}")
-              broadcast(:update_game, { 'name' => new_name })
+              broadcast(:update_game, {
+                'name' => new_name,
+                'cards_remaining' => cards_remaining,
+                'sets_on_board' => sets_on_board
+              })
             end
           end
         else
@@ -115,6 +119,11 @@ module SetGame
               broadcast(:scores, scores.map do |id,score|
                 [id, get_player_by_id(id).name.value, score]
               end)
+              broadcast(:update_game, {
+                'name' => name.value,
+                'cards_remaining' => cards_remaining,
+                'sets_on_board' => sets_on_board
+              })
             end
           end
         end

@@ -47,7 +47,18 @@ function(
         },
 
         update_game: function() {
-            this.$el.find('.game-name').text(this.model.get('name'));
+            var name = this.model.get('name');
+            if (name) {
+                $('.game-name').text(name);
+            }
+            var sets_on_board = this.model.get('sets_on_board');
+            if (sets_on_board) {
+                $('.sets-on-board').text(sets_on_board);
+            }
+            var cards_remaining = this.model.get('cards_remaining');
+            if (cards_remaining) {
+                $('.cards-remaining').text(cards_remaining);
+            }
         },
 
         trigger_game_name_modal: function(e) {
