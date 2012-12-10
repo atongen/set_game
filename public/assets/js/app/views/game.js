@@ -62,7 +62,6 @@ function(
             }
             var state = this.model.get('state');
             if (state) {
-                // game state has changed
                 if (state == 'new') {
                     var btn = $('<button>', { class: 'btn btn-success btn-large btn-block btn-start' });
                     btn.text("Start Game");
@@ -79,7 +78,7 @@ function(
                     $('#status-btn').html(btn);
                 } else if (state == 'started') {
                     var btn = $('<button>', { class: 'btn btn-large btn-block btn-stall' });
-                    btn.text("Stall");
+                    btn.text("I'm Stuck!");
                     var model = this.model;
                     btn.on('click', function(e) {
                         e.preventDefault();
@@ -91,7 +90,7 @@ function(
                     var btn = $('<button>', { class: 'btn btn-warning btn-large btn-block btn-stall' });
                     btn.text("You've Stalled Out!");
                     $('#status-btn').html(btn);
-                } else if (state == 'completed') {
+                } else if (state == 'complete') {
                     $('#status-btn').html("");
                 }
             }

@@ -329,10 +329,10 @@ module SetGame
           # disconnected player
           'important'
         end
-        { :id     => id,
-          :name   => player.name.value,
-          :score  => (scores[player.id] || '0').to_i,
-          :status => status
+        { 'id'     => id,
+          'name'   => player.name.value,
+          'score'  => (scores[player.id] || '0').to_i,
+          'status' => status
         }
       end
       # sort by score first, and name second

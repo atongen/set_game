@@ -108,7 +108,7 @@ function(
                 // card is already selected, de-select it
                 this.selected.splice(idx, 1);
                 this.render();
-            } else if (this.selected.length < 3 && this.board[dst_id] > 0) {
+            } else if (this.selected.length < 3 && this.board[dst_id] >= 0) {
                 this.selected.push(dst_id);
                 if (this.selected.length == 3) {
                     // get the id's of the selected cards
@@ -139,7 +139,7 @@ function(
         _handle_mouse_move: function(e) {
             var highlight = this._dst_pix_to_id(this._mouse_pos(e));
             if (highlight != this.highlight) {
-                if (this.board[highlight] > 0) {
+                if (this.board[highlight] >= 0) {
                     this.highlight = highlight;
                 } else {
                     this.highlight = -1;
