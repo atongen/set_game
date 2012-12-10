@@ -86,18 +86,53 @@ module SetGame
               ready_player_ids << player.id
               not_ready = players_by_ws.values.map(&:id).map(&:to_i) - ready_player_ids.members.map(&:to_i)
               if not_ready.blank?
-                # all connected players are ready to start game
-                state.value = 'started'
-                broadcast(:update_game, {
-                  'cards_remaining' => cards_remaining,
-                  'state' => state.value
-                })
-                broadcast(:update_board, board.map(&:to_s).join(":"))
-                broadcast(:update_score_box, score_box_data)
-                announce(name.value, "The game has started!")
+                @lock.synchronize do
+                  # all connected players are ready to start game
+                  state.value = 'started'
+                  broadcast(:update_game, {
+                    'cards_remaining' => cards_remaining,
+                    'state' => state.value
+                  })
+                  broadcast(:update_board, board.map(&:to_s).join(":"))
+                  broadcast(:update_score_box, score_box_data)
+                  announce(name.value, "The game has started!")
+                end
               else
                 announce(name.value, "#{player.name.value} is ready to start.")
                 ws.send(Msg.update_game({ 'state' => 'waiting' }))
+              end
+            end
+            if started? && data['state'] == 'stalled'
+              @lock.synchronize do
+                stalled_player_ids << player.id
+                not_stalled = players_by_ws.values.map(&:id).map(&:to_i) - stalled_player_ids.members.map(&:to_i)
+                if not_stalled.blank? || sets_on_board == 0
+                  replace = []
+                  while replace.length < 3
+                    idx = rand(12)
+                    if board[idx].present? && !replace.include?(idx)
+                      replace << idx
+                    end
+                  end
+                  replace.each do |ridx|
+                    if new_id = deck.pop
+                      old_id = board[ridx]
+                      board[ridx] = new_id
+                      deck.unshift(old_id)
+                    end
+                  end
+                  broadcast(:update_board, board.map(&:to_s).join(":"))
+                  announce(name.value, "Board randomly updated")
+                  broadcast(:update_game, {
+                    'state' => 'started',
+                    'cards_remaining' => cards_remaining
+                  })
+                  while stalled_player_ids.pop; end
+                else
+                  announce(name.value, "#{player.name.value} has stalled out!")
+                  ws.send(Msg.update_game({ 'state' => 'stalled' }))
+                end
+                broadcast(:update_score_box, score_box_data)
               end
             end
           else
@@ -139,7 +174,7 @@ module SetGame
               increment_score(player.id)
               player.num_scores.increment
 
-              stalled_player_ids = []
+              while stalled_player_ids.pop; end
 
               announce(name.value, "#{player.name.value} got a set!")
               broadcast(:update_board, board.map(&:to_s).join(":"))
@@ -148,10 +183,6 @@ module SetGame
               if !Card.set_exists?((board.values + deck.values).map(&:to_i).compact)
                 # the game is over
                 state.value = 'complete'
-                broadcast(:update_game, {
-                  'state' => state.value,
-                  'cards_remaining' => cards_remaining
-                })
 
                 # declare the winner(s)
                 sbx = score_box_data
@@ -162,9 +193,12 @@ module SetGame
                 else
                   announce(name.value, winners.map { |w| w['name'] }.join(' and ') + ' tied for the win!')
                 end
-              else
-                broadcast(:update_game, { 'cards_remaining' => cards_remaining })
               end
+              # always update game state
+              broadcast(:update_game, {
+                'state' => state.value,
+                'cards_remaining' => cards_remaining
+              })
             end
           end
         end

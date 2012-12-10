@@ -78,9 +78,21 @@ function(
                     btn.text("Waiting to Start");
                     $('#status-btn').html(btn);
                 } else if (state == 'started') {
-                    $('#status-btn').html("");
+                    var btn = $('<button>', { class: 'btn btn-large btn-block btn-stall' });
+                    btn.text("Stall");
+                    var model = this.model;
+                    btn.on('click', function(e) {
+                        e.preventDefault();
+                        model.set({ state: 'stalled' });
+                        model.save();
+                    });
+                    $('#status-btn').html(btn);
+                } else if (state == 'stalled') {
+                    var btn = $('<button>', { class: 'btn btn-warning btn-large btn-block btn-stall' });
+                    btn.text("You've Stalled Out!");
+                    $('#status-btn').html(btn);
                 } else if (state == 'completed') {
-                    // do something here when game is complete?
+                    $('#status-btn').html("");
                 }
             }
         },

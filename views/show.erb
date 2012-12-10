@@ -5,7 +5,7 @@
         <a class="brand" href="<%= CONFIG['url'] %>">Set Game</a>
         <div class="nav-collapse collapse">
           <p id="player" class="navbar-text pull-right">
-            Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
+          Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
           </p>
           <ul id="game" class="nav">
             <li><a id="game-btn" class="game-name" href="#"><%= @game.name.value %></a></li>
@@ -19,42 +19,42 @@
     <div class="row">
       <div class="span3">
         <div id="comments">
+          <div class="well">
+            <ul class="comment-list"></ul>
+          </div>
           <div class="input-append">
             <input class="span2" id="comment" type="text">
             <button class="btn" id="comment-btn" type="button">Say!</button>
           </div>
-          <div class="well">
-            <ul class="comment-list"></ul>
-          </ul>
         </div>
         <div id="stats">
           <dl class="stat-list dl-horizontal">
             <dt>Sets on Board</dt>
             <dd>
-              <span class="badge badge-inverse sets-on-board">
-                <%= @game.sets_on_board %>
-              </span>
+            <span class="badge badge-inverse sets-on-board">
+              <%= @game.sets_on_board %>
+            </span>
             </dd>
             <dt>Cards Remaining</dt>
             <dd>
-              <span class="badge badge-inverse cards-remaining">
-                <%= @game.cards_remaining %>
-              </span>
+            <span class="badge badge-inverse cards-remaining">
+              <%= @game.cards_remaining %>
+            </span>
             </dd>
           </dl>
         </div>
         <div id="status-btn"></div>
         <div id="score-box"></div>
       </div>
-    </div>
-    <div class="span9">
-      <div class="hero-unit">
-        <canvas id="board" width="648" height="756">
+      <div class="span9">
+        <div class="hero-unit">
+          <canvas id="board" width="648" height="756">
           <p>Oops, your browser doesn't support the canvas element. Please upgrade to Chrome.</p>
-        </canvas>
+          </canvas>
+        </div>
       </div>
     </div>
+    <%= erb :footer %>
   </div>
-  <%= erb :footer %>
   <div id="modal"></div>
 </body>
