@@ -1,7 +1,11 @@
 module SetGame
   class Player
     include Model
+
     value :name
+    counter :num_scores
+    counter :num_games
+
     attr_accessor :games
 
     def initialize(id = nil)

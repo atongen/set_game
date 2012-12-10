@@ -38,6 +38,30 @@ helpers do
       end
     end
   end
+
+  def clean_up
+    # remove old games
+    games_to_rm = []
+    GAMES.each do |id, game|
+      games_to_rm << id if game.can_be_destroyed?
+    end
+    games_to_rm.each do |id|
+      game = GAMES[id]
+      game.destroy!
+      GAMES.delete(id)
+    end
+
+    # remove players who are gone
+    players_to_rm = []
+    PLAYERS.each do |id, player|
+      players_to_rm << id if player.games.blank?
+    end
+    players_to_rm.each do |id|
+      PLAYERS.delete(id)
+    end
+
+    true
+  end
 end
 
 get '/' do
@@ -83,6 +107,7 @@ get '/games/:id/ws' do
       ws.onclose do
         game.remove_player(ws)
         player.remove_game(ws)
+        clean_up
       end
     end
   else

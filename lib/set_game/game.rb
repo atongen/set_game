@@ -28,6 +28,7 @@ module SetGame
     attr_accessor :players_by_id
 
     BOARD_SIZE = 12
+    TIMEOUT = 60*60*24
 
     def initialize(id = nil)
       super
@@ -136,6 +137,7 @@ module SetGame
               # It's a set!
               [idx1, idx2, idx3].each { |pos| board[pos] = deck.pop }
               increment_score(player.id)
+              player.num_scores.increment
 
               stalled_player_ids = []
 
@@ -181,6 +183,7 @@ module SetGame
           announce(name.value, "#{player.name.value} returned")
         else
           self.player_ids << player.id
+          player.num_games.increment
           increment_score(player.id, 0)
           announce(name.value, "#{player.name.value} joined game")
         end
@@ -236,10 +239,34 @@ module SetGame
       state.value == 'completed'
     end
 
+    def destroy!
+      %w{ state
+          last_activity_at
+          password
+          name
+          deck
+          board
+          player_ids
+          comments
+          scores
+          creator_id
+          stalled_player_ids
+          ready_player_ids }.map do |obj_name|
+        key_name = self.send(obj_name.to_sym).key
+        $redis.del(key_name)
+        key_name
+      end
+    end
+
+    def can_be_destroyed?
+      completed? && players_by_ws.blank? ||
+        (Time.now.to_i - last_activity_at.value.to_i) > TIMEOUT
+    end
+
     private
 
     def touch
-      self.last_activity_at = Time.now.to_f
+      self.last_activity_at = Time.now.to_i
     end
 
     def increment_score(player_id, n = 1)
