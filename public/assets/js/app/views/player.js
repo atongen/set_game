@@ -48,6 +48,7 @@ function(
 
         update_player: function() {
             this.$el.find('.player-name').text(this.model.get('name'));
+            $('#player-' + this.model.id).text(this.model.get('name'));
         },
 
         trigger_player_name_modal: function(e) {
