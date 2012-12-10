@@ -61,9 +61,9 @@ function(
             }
 
             var sets = 0;
-            for (var i = 0; i <= l - 3; i++) {
-                for (var j = i + 1; j <= l - 2; j++) {
-                    for (var k = j + 1; k <= l - 1; k++) {
+            for (var i = 0; i <= (l - 3); i++) {
+                for (var j = (i + 1); j <= (l - 2); j++) {
+                    for (var k = (j + 1); k <= (l - 1); k++) {
                         if (this.is_set(idx[i], idx[j], idx[k])) {
                             sets += 1;
                         }
