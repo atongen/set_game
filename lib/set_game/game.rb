@@ -174,13 +174,14 @@ module SetGame
               increment_score(player.id)
               player.num_scores.increment
 
+              # empty stalled_player_ids after set is achived
               while stalled_player_ids.pop; end
 
               announce(name.value, "#{player.name.value} got a set!")
               broadcast(:update_board, board.map(&:to_s).join(":"))
               broadcast(:update_score_box, score_box_data)
 
-              if !Card.set_exists?((board.values + deck.values).map(&:to_i).compact)
+              if game_over?
                 # the game is over
                 state.value = 'complete'
 
@@ -255,6 +256,10 @@ module SetGame
 
     def cards_remaining
       board.select { |b| b.present? }.length + deck.length
+    end
+
+    def game_over?
+      !Card.set_exists?((board.values + deck.values).select(&:present?).map(&:to_i))
     end
 
     def new_game?

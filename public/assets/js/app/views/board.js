@@ -29,6 +29,7 @@ function(
         hightlight: -1,
         card_width: 162,
         card_height: 252,
+        sprite: null,
 
         events: {
             'mouseleave': '_handle_mouse_leave',
@@ -78,7 +79,7 @@ function(
                 return _.isNaN(n) ? -1 : n;
             }, this);
             _.each(this.selected, function(idx) {
-                if (new_board[idx] == this.board[idx]) {
+                if (new_board[idx] >= 0 && new_board[idx] == this.board[idx]) {
                     // board has not changed for the selected position
                     selected.push(idx);
                 }
@@ -89,15 +90,16 @@ function(
         },
 
         _draw_card: function(src_id, dst_id) {
-            var sprite = ImageLoader.getImage(this.sprite_path);
-            if (sprite) {
+            var d = this._dst_id_to_pix(dst_id);
+            if (src_id >= 0 && ImageLoader.getImage(this.sprite_path)) {
                 var s = this._src_id_to_pix(src_id);
-                var d = this._dst_id_to_pix(dst_id);
                 this.ctx.drawImage(
-                    sprite,
+                    ImageLoader.getImage(this.sprite_path),
                     s.x, s.y, this.card_width, this.card_height,
                     d.x, d.y, this.card_width, this.card_height
                 );
+            } else {
+                this.ctx.clearRect(d.x, d.y, this.card_width, this.card_height);
             }
         },
 

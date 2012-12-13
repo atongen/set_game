@@ -53,11 +53,11 @@ function(
                 $('.game-name').text(name);
             }
             var sets_on_board = this.model.get('sets_on_board');
-            if (sets_on_board) {
+            if (_.isNumber(sets_on_board) && sets_on_board >= 0) {
                 $('.sets-on-board').text(sets_on_board);
             }
             var cards_remaining = this.model.get('cards_remaining');
-            if (cards_remaining) {
+            if (_.isNumber(cards_remaining) && cards_remaining >= 0) {
                 $('.cards-remaining').text(cards_remaining);
             }
             var state = this.model.get('state');

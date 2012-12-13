@@ -54,7 +54,11 @@ function(
          * and count the number of sets
          */
         count_sets: function(indexes) {
-            var idx = _.compact(indexes);
+            var idx = _.compact(_.map(indexes, function(val) {
+                if (val >= 0) {
+                    return val;
+                }
+            }));
             var l = idx.length;
             if (l < 3) {
                 return 0;
