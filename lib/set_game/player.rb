@@ -5,6 +5,7 @@ module SetGame
     value :name
     counter :num_scores
     counter :num_games
+    counter :num_wins
 
     attr_accessor :games
 

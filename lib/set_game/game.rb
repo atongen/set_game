@@ -194,6 +194,9 @@ module SetGame
                 else
                   announce(name.value, winners.map { |w| w['name'] }.join(' and ') + ' tied for the win!')
                 end
+                winners.each do |w|
+                  Player.find(w['id']).num_wins.increment
+                end
               end
               # always update game state
               broadcast(:update_game, {
@@ -337,8 +340,7 @@ module SetGame
         { 'id'     => id,
           'name'   => player.name.value,
           'score'  => (scores[player.id] || '0').to_i,
-          'status' => status
-        }
+          'status' => status }
       end
       # sort by score first, and name second
       data.sort { |x,y| [y[2], x[1]] <=> [x[2], y[1]] }
