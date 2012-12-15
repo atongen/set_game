@@ -1,4 +1,4 @@
 #!/bin/bash
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
-bundle exec irb -r "./lib/set_game"
+bundle exec irb -r "$APP_HOME/config/environment"

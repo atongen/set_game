@@ -1,7 +1,7 @@
 GAMES = {}
 PLAYERS = {}
 
-require File.expand_path("../lib/set_game", __FILE__)
+require File.expand_path("../config/environment", __FILE__)
 
 SetGame::MoveProcessorGroup.run!
 Celluloid::Actor[:move_processor_pool].process!

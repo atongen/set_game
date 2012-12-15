@@ -18,3 +18,12 @@ gem 'pony'
 group :assets do
   gem 'rmagick', :require => 'Magick'
 end
+
+group :test do
+  gem 'minitest'
+end
+
+group :development do
+  gem 'yard'
+  gem 'redcarpet'
+end

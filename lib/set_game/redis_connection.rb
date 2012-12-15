@@ -5,19 +5,19 @@ require 'redis/objects'
 
 module SetGame
   class RedisConnection
-    def self.create(options={})
+    def self.create(options = {})
       options = {} unless options.present?
       if %w{ host port database }.all? { |key| options[key].present? }
         url = "redis://#{options['host']}:#{options['port']}/#{options['database']}"
       else
         url = 'redis://localhost:6379/0'
       end
-      driver = options[:driver] || 'ruby'
+      driver = options['driver'] || 'ruby'
       # need a connection for Fetcher and Retry
       size = options[:size] || 4
 
       ConnectionPool.new(:timeout => 1, :size => size) do
-        build_client(url, options[:namespace], driver)
+        build_client(url, options['namespace'], driver)
       end
     end
 

@@ -1,7 +1,3 @@
-require 'pathname'
-SET_GAME_ROOT = Pathname.new(File.expand_path('../..', __FILE__))
-$:.unshift(SET_GAME_ROOT.join('lib'))
-
 require 'json'
 require 'time'
 require 'yaml'
@@ -10,13 +6,6 @@ require 'celluloid'
 
 require 'active_support/lazy_load_hooks'
 require 'active_support/core_ext/string'
-
-config_path = SET_GAME_ROOT.join('config', 'set_game.yml')
-if File.file?(config_path)
-  CONFIG = YAML::load(File.read(config_path)) || {}
-else
-  CONFIG = {}
-end
 
 module SetGame
   autoload :Model,              "set_game/model"
