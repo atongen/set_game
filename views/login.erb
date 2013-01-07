@@ -1,6 +1,11 @@
-<h2>Game #<%= @game.id %></h2>
-<form class="form-signin" action="/games/<%= @game.id %>/login" method="post">
-  <h2 class="form-signin-heading">Welcome <%= @player.name.value %>, please sign in.</h2>
-  <input type="password" name="password" class="input-block-level" placeholder="Password">
-  <button class="btn btn-large btn-primary" type="submit">Sign in</button>
-</form>
+<body>
+  <div class="container">
+    <%= erb :flash %>
+    <form class="form-signin" action="/games/<%= @game.id %>/login" method="post">
+      <h2 class="form-signin-heading">Welcome <%= @player.name.value %>, enter the password for game #<%= @game.id %>.</h2>
+      <input type="password" name="password" class="input-block-level" placeholder="Password">
+      <button class="btn btn-large btn-primary" type="submit">Go!</button>
+    </form>
+    <%= erb :footer %>
+  </div>
+</body>

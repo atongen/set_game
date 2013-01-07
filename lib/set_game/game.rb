@@ -70,6 +70,9 @@ module SetGame
               player.name.value = new_name
               player.announce(name.value, "#{old_name} is now known as #{new_name}")
               player.broadcast(:update_player, { 'name' => new_name })
+              @lock.synchronize do
+                broadcast(:update_score_box, score_box_data)
+              end
             end
           when 'update_game'
             # only creator can update game
@@ -211,16 +214,16 @@ module SetGame
 
     def add_player(ws, player)
       self.players_by_ws[ws] = player
-      self.players_by_id[player.id.to_i] = player
+      existing = self.players_by_id.include?(player.id)
+      self.players_by_id[player.id] = player
 
       # send comments to player
       ws.send(Msg.read_comments(comments.map { |c| JSON.parse(c) }))
 
       if !completed?
-        if self.player_ids.include?(player.id)
+        if existing
           announce(name.value, "#{player.name.value} returned")
         else
-          self.player_ids << player.id
           player.num_games.increment
           increment_score(player.id, 0)
           announce(name.value, "#{player.name.value} joined game")

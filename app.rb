@@ -8,18 +8,20 @@ Celluloid::Actor[:move_processor_pool].process!
 
 require 'sinatra'
 require 'sinatra-websocket'
+require 'rack-flash'
 
 set :server, 'thin'
 enable :sessions
 set :protection, :except => :session_hijacking
+use Rack::Flash, :sweep => true
 
 helpers do
   def get_player
     if session[:player_id]
-      if PLAYERS.has_key?(session[:player_id])
-        PLAYERS[session[:player_id]]
+      if PLAYERS.has_key?(session[:player_id].to_i)
+        PLAYERS[session[:player_id].to_i]
       else
-        PLAYERS[session[:player_id]] = SetGame::Player.find(session[:player_id].to_i)
+        PLAYERS[session[:player_id].to_i] = SetGame::Player.find(session[:player_id].to_i)
       end
     else
       player = SetGame::Player.new
@@ -70,13 +72,19 @@ get '/' do
 end
 
 post '/games' do
-  game = SetGame::Game.new
-  GAMES[game.id] = game
-  player = get_player
-  game.player_ids << player.id
-  game.creator_id.value = player.id
-  SetGame::Stats.increment_num_games
-  redirect to("/games/#{game.id}")
+  clean_up
+  if GAMES.length < CONFIG['max_games']
+    game = SetGame::Game.new
+    GAMES[game.id] = game
+    player = get_player
+    game.player_ids << player.id
+    game.creator_id.value = player.id
+    SetGame::Stats.increment_num_games
+    redirect to("/games/#{game.id}")
+  else
+    flash[:notice] = 'There are too many games being played right now! Please try again later.'
+    redirect to('/')
+  end
 end
 
 get '/games/:id' do
@@ -96,12 +104,16 @@ get '/games/:id/ws' do
   if request.websocket? && (game = get_game) && (player = get_player)
     request.websocket do |ws|
       ws.onopen do
-        player.add_game(ws, game)
-        game.add_player(ws, player)
+        if game.player_ids.include?(player.id) && game.players_by_ws.length < CONFIG['max_players_per_game']
+          player.add_game(ws, game)
+          game.add_player(ws, player)
+        end
       end
       ws.onmessage do |msg|
-        EM.next_tick do
-          game.handle(ws, msg)
+        if game.players_by_id.include?(player.id)
+          EM.next_tick do
+            game.handle(ws, msg)
+          end
         end
       end
       ws.onclose do
@@ -111,25 +123,36 @@ get '/games/:id/ws' do
       end
     end
   else
+    flash[:notice] = "The game isn't there!"
     redirect to('/')
   end
 end
 
 get '/games/:id/login' do
-  @player = get_player
-  @game = get_game
-  erb :login
+  if (@game = get_game) && (@player = get_player)
+    erb :login
+  else
+    flash[:notice] = "The game isn't there!"
+    redirect to('/')
+  end
 end
 
 post '/games/:id/login' do
   if (@game = get_game) && (@player = get_player)
     if @game.password.value == params[:password]
       @game.player_ids << @player.id
-      redirect to("/games/#{@game.id}")
+      if @game.players_by_ws.length < CONFIG['max_players_per_game']
+        redirect to("/games/#{@game.id}")
+      else
+        flash[:notice] = "There are too many players in that game already!"
+        redirect to('/')
+      end
     else
+      flash[:notice] = "Invalid password for this game."
       erb :login
     end
   else
+    flash[:notice] = "The game isn't there!"
     redirect to('/')
   end
 end

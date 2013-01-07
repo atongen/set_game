@@ -2,7 +2,7 @@
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand" href="<%= CONFIG['url'] %>">Set Game</a>
+        <span class="brand">Set Game</span>
         <div class="nav-collapse collapse">
           <p id="player" class="navbar-text pull-right">
           Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
@@ -47,6 +47,7 @@
         <div id="score-box"></div>
       </div>
       <div class="span9">
+        <%= erb :flash %>
         <div class="hero-unit">
           <canvas id="board" width="648" height="756">
           <p>Oops, your browser doesn't support the canvas element. Please upgrade to Chrome.</p>

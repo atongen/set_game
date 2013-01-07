@@ -32,6 +32,8 @@ GEM
     pony (1.4)
       mail (> 2.0)
     rack (1.4.1)
+    rack-flash3 (1.0.3)
+      rack
     rack-protection (1.2.0)
       rack
     rake (0.9.2.2)
@@ -74,6 +76,7 @@ DEPENDENCIES
   json
   minitest
   pony
+  rack-flash3
   rake
   redcarpet
   redis

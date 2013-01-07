@@ -1,13 +1,50 @@
-url: http://localhost:3000
-redis:
-  host: 127.0.0.1
-  port: 6379
-  database: 0
-smtp:
-  address: smtp.gmail.com
-  port: 587
-  enable_starttls_auto: true,
-  user_name: example@gmail.com
-  password: h@ackm3
-  authentication: plain
-  domain: gmail.com
+development:
+  url: http://localhost:3000
+  max_games: 100
+  max_players_per_game: 6
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+  smtp:
+    address: smtp.gmail.com
+    port: 587
+    enable_starttls_auto: true,
+    user_name: example@gmail.com
+    password: h@ckm3
+    authentication: plain
+    domain: gmail.com
+
+test:
+  url: http://localhost:3000
+  max_games: 100
+  max_players_per_game: 6
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 1
+  smtp:
+    address: smtp.gmail.com
+    port: 587
+    enable_starttls_auto: true,
+    user_name: example@gmail.com
+    password: h@ckm3
+    authentication: plain
+    domain: gmail.com
+
+production:
+  url: http://localhost:3000
+  max_games: 100
+  max_players_per_game: 6
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+  smtp:
+    address: smtp.gmail.com
+    port: 587
+    enable_starttls_auto: true,
+    user_name: example@gmail.com
+    password: h@ckm3
+    authentication: plain
+    domain: gmail.com
