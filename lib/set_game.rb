@@ -21,4 +21,4 @@ module SetGame
 end
 
 $redis = SetGame::PoolWrapper.new
-$emailer = SetGame::Emailer.new
+SetGame::Emailer.supervise_as(:emailer)

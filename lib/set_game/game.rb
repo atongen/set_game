@@ -138,6 +138,10 @@ module SetGame
                 broadcast(:update_score_box, score_box_data)
               end
             end
+          when 'create_message'
+            message(player.id, data["from_name"], data["from_email"], data[:msg])
+          when 'create_invite'
+            invite(data["to_email"], data["from_name"], data["msg"])
           else
             puts "Unknown message: #{msg.inspect}"
           end
@@ -253,7 +257,11 @@ module SetGame
     end
 
     def invite(to_email, from_name, msg = nil)
-      $emailer.invite(self.id, to_email, from_name, msg)
+      Celluloid::Actor[:emailer].invite!(self.id, to_email, from_name, msg)
+    end
+
+    def message(player_id, from_name, from_email, msg)
+      Celluloid::Actor[:emailer].message!(self.id, player_id, from_name, from_email, msg)
     end
 
     def sets_on_board
