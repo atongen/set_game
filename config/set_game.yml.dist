@@ -1,6 +1,7 @@
 development: &default
   url: http://localhost:3000
   my_email: example@gmail.com
+  fb_admins: 000000000000000
   max_games: 100
   max_players_per_game: 6
   redis:

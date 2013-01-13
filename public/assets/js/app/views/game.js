@@ -3,7 +3,9 @@ define([
     'underscore',
     'backbone',
     'lib/EventBus',
-    'lib/Modal'
+    'lib/Modal',
+    'app/models/invite',
+    'text!app/templates/invite.html'
 ],
 
 function(
@@ -11,13 +13,16 @@ function(
     _,
     Backbone,
     EventBus,
-    Modal
+    Modal,
+    Invite,
+    invite_tpl
 ) {
 
     return Backbone.View.extend({
 
         events: {
-            'click #game-btn': 'trigger_game_name_modal'
+            'click #game-btn': 'trigger_game_name_modal',
+            'click #invite-btn': 'trigger_invite_modal'
         },
 
         initialize: function(options) {
@@ -25,15 +30,28 @@ function(
             this.player = options.player;
 
             /**
-             * Setup modal
+             * Setup game name modal
              */
-            this.modal = new Modal({
+            this.game_name_modal = new Modal({
                 id: 'game-name-modal',
                 title: 'Change Game Name',
                 body: "<input type='text' id='game-name-field' val='' placeholder='Change game name...'/>",
                 context: this,
                 submit: function(content) {
                     this.change_game_name(content);
+                }
+            });
+
+            /**
+             * Setup invite modal
+             */
+            this.invite_modal = new Modal({
+                id: 'invite-modal',
+                title: 'Invite a Friend',
+                body: _.template(invite_tpl, {}),
+                context: this,
+                submit: function(content) {
+                    this.send_invite(content);
                 }
             });
 
@@ -99,7 +117,7 @@ function(
         trigger_game_name_modal: function(e) {
             e.preventDefault();
             if (this._is_creator()) {
-                this.modal.render();
+                this.game_name_modal.render();
             }
         },
 
@@ -110,8 +128,25 @@ function(
                     this.model.set({ name: name });
                     this.model.save();
                     this.update_game();
-                    this.modal.close();
+                    this.game_name_modal.close();
                 }
+            }
+        },
+
+        trigger_invite_modal: function(e) {
+            e.preventDefault();
+            this.invite_modal.render();
+        },
+
+        send_invite: function(content) {
+            var to_email = $.trim(content.find('input#to-email-field').val());
+            var from_name = $.trim(content.find('input#from-name-field').val());
+            if (to_email != "" && from_name != "") {
+                var msg = $.trim(content.find('input#msg-field').val());
+                var invt = new Invite();
+                invt.set({ to_email: to_email, from_name: from_name, msg: msg });
+                invt.save();
+                this.invite_modal.close();
             }
         },
 

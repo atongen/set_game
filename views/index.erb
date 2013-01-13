@@ -1,26 +1,50 @@
 <body>
   <div class="container">
+    <div class="hero-unit">
+      <h1>Set Game</h1>
+      <form id="form" action="/games" method="post">
+        <p>HTML5 implementation of the <a href="http://setgame.com/puzzle/set.htm" target="_blank">Set Game</a>
+        from <a href="http://setgame.com" target="_blank">Set Enterprises</a>. Click the button
+        below to start a new game.</p>
+        <p><input type="submit" class="btn btn-primary btn-large" value="New Game &raquo;" /></p>
+      </form>
+    </div>
     <div class="row">
       <div class="span12">
-        <div class="hero-unit">
-          <h1>Set Game</h1>
-          <form id="form" action="/games" method="post">
-            <input type="submit" class="btn" value="Start New Game" />
-          </form>
-        </div>
+        <%= erb :flash %>
       </div>
     </div>
-    <%= erb :flash %>
     <div class="row">
-      <div class="span6">
-
+      <div class="span9">
+        <ul class="cards">
+        <%# random_card_numbers(3).each do |c| %>
+          <% %w{ 00 40 80 }.each do |c| %>
+          <li><span class="card-<%= c %>">Card <%= c %></span></li>
+        <% end %>
+        </ul>
+        <div style="clear: left"></div>
+        <p>From <a href="http://en.wikipedia.org/wiki/Set_(game)">wikipedia</a>:</p>
+        <blockquote>
+          <p><em>Set</em> is a real-time card game designed by Marsha Falco in 1974 and published by
+          Set Enterprises in 1991. The deck consists of 81 cards varying in four features:
+          number (one, two, or three); symbol (diamond, squiggle, oval); shading (solid,
+          striped, or open); and color (red, green, or purple). Each possible combination
+          of features (e.g., a card with three striped green diamonds) appears precisely once
+          in the deck.</p>
+        </blockquote>
       </div>
-      <div class="span6">
-        <p>
-          Num Games: <%= SetGame::Stats.num_games %><br />
-          Num Players: <%= SetGame::Stats.num_players %>
+      <div class="span3">
+        <h3>Game Statistics</h3>
+        <dl class="dl-horizontal">
+          <dt>Total games played</dt>
+          <dd><%= SetGame::Stats.num_games %></dd>
+          <dt>Total players</dt>
+          <dd><%= SetGame::Stats.num_players %></dd>
+          <dt>Current number games</dt>
+          <dd><%= GAMES.length %></dd>
         </p>
       </div>
     </div>
+    <%= erb :footer %>
   </div>
 </body>

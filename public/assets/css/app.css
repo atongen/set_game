@@ -49,3 +49,348 @@ body {
 .comment .byline {
   font-weight: bold;
 }
+
+ul.cards {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.cards li {
+    list-style-type: none;
+    float: left;
+    padding: 0px;
+}
+
+.cards span {
+    display: block;
+    width: 162px;
+    height: 252px;
+    background-image: url(/assets/images/card_sprite.png);
+    text-indent: -9999px;
+}
+
+.card-00 {
+  background-position: -0px -0px;
+}
+
+.card-01 {
+  background-position: -162px -0px;
+}
+
+.card-02 {
+  background-position: -324px -0px;
+}
+
+.card-03 {
+  background-position: -486px -0px;
+}
+
+.card-04 {
+  background-position: -648px -0px;
+}
+
+.card-05 {
+  background-position: -810px -0px;
+}
+
+.card-06 {
+  background-position: -972px -0px;
+}
+
+.card-07 {
+  background-position: -1134px -0px;
+}
+
+.card-08 {
+  background-position: -1296px -0px;
+}
+
+.card-09 {
+  background-position: -0px -252px;
+}
+
+.card-10 {
+  background-position: -162px -252px;
+}
+
+.card-11 {
+  background-position: -324px -252px;
+}
+
+.card-12 {
+  background-position: -486px -252px;
+}
+
+.card-13 {
+  background-position: -648px -252px;
+}
+
+.card-14 {
+  background-position: -810px -252px;
+}
+
+.card-15 {
+  background-position: -972px -252px;
+}
+
+.card-16 {
+  background-position: -1134px -252px;
+}
+
+.card-17 {
+  background-position: -1296px -252px;
+}
+
+.card-18 {
+  background-position: -0px -504px;
+}
+
+.card-19 {
+  background-position: -162px -504px;
+}
+
+.card-20 {
+  background-position: -324px -504px;
+}
+
+.card-21 {
+  background-position: -486px -504px;
+}
+
+.card-22 {
+  background-position: -648px -504px;
+}
+
+.card-23 {
+  background-position: -810px -504px;
+}
+
+.card-24 {
+  background-position: -972px -504px;
+}
+
+.card-25 {
+  background-position: -1134px -504px;
+}
+
+.card-26 {
+  background-position: -1296px -504px;
+}
+
+.card-27 {
+  background-position: -0px -756px;
+}
+
+.card-28 {
+  background-position: -162px -756px;
+}
+
+.card-29 {
+  background-position: -324px -756px;
+}
+
+.card-30 {
+  background-position: -486px -756px;
+}
+
+.card-31 {
+  background-position: -648px -756px;
+}
+
+.card-32 {
+  background-position: -810px -756px;
+}
+
+.card-33 {
+  background-position: -972px -756px;
+}
+
+.card-34 {
+  background-position: -1134px -756px;
+}
+
+.card-35 {
+  background-position: -1296px -756px;
+}
+
+.card-36 {
+  background-position: -0px -1008px;
+}
+
+.card-37 {
+  background-position: -162px -1008px;
+}
+
+.card-38 {
+  background-position: -324px -1008px;
+}
+
+.card-39 {
+  background-position: -486px -1008px;
+}
+
+.card-40 {
+  background-position: -648px -1008px;
+}
+
+.card-41 {
+  background-position: -810px -1008px;
+}
+
+.card-42 {
+  background-position: -972px -1008px;
+}
+
+.card-43 {
+  background-position: -1134px -1008px;
+}
+
+.card-44 {
+  background-position: -1296px -1008px;
+}
+
+.card-45 {
+  background-position: -0px -1260px;
+}
+
+.card-46 {
+  background-position: -162px -1260px;
+}
+
+.card-47 {
+  background-position: -324px -1260px;
+}
+
+.card-48 {
+  background-position: -486px -1260px;
+}
+
+.card-49 {
+  background-position: -648px -1260px;
+}
+
+.card-50 {
+  background-position: -810px -1260px;
+}
+
+.card-51 {
+  background-position: -972px -1260px;
+}
+
+.card-52 {
+  background-position: -1134px -1260px;
+}
+
+.card-53 {
+  background-position: -1296px -1260px;
+}
+
+.card-54 {
+  background-position: -0px -1512px;
+}
+
+.card-55 {
+  background-position: -162px -1512px;
+}
+
+.card-56 {
+  background-position: -324px -1512px;
+}
+
+.card-57 {
+  background-position: -486px -1512px;
+}
+
+.card-58 {
+  background-position: -648px -1512px;
+}
+
+.card-59 {
+  background-position: -810px -1512px;
+}
+
+.card-60 {
+  background-position: -972px -1512px;
+}
+
+.card-61 {
+  background-position: -1134px -1512px;
+}
+
+.card-62 {
+  background-position: -1296px -1512px;
+}
+
+.card-63 {
+  background-position: -0px -1764px;
+}
+
+.card-64 {
+  background-position: -162px -1764px;
+}
+
+.card-65 {
+  background-position: -324px -1764px;
+}
+
+.card-66 {
+  background-position: -486px -1764px;
+}
+
+.card-67 {
+  background-position: -648px -1764px;
+}
+
+.card-68 {
+  background-position: -810px -1764px;
+}
+
+.card-69 {
+  background-position: -972px -1764px;
+}
+
+.card-70 {
+  background-position: -1134px -1764px;
+}
+
+.card-71 {
+  background-position: -1296px -1764px;
+}
+
+.card-72 {
+  background-position: -0px -2016px;
+}
+
+.card-73 {
+  background-position: -162px -2016px;
+}
+
+.card-74 {
+  background-position: -324px -2016px;
+}
+
+.card-75 {
+  background-position: -486px -2016px;
+}
+
+.card-76 {
+  background-position: -648px -2016px;
+}
+
+.card-77 {
+  background-position: -810px -2016px;
+}
+
+.card-78 {
+  background-position: -972px -2016px;
+}
+
+.card-79 {
+  background-position: -1134px -2016px;
+}
+
+.card-80 {
+  background-position: -1296px -2016px;
+}
+

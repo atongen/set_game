@@ -64,6 +64,14 @@ helpers do
 
     true
   end
+
+  def random_card_numbers(n)
+    r = []
+    while r.length < n
+      r |= [rand(81)]
+    end
+    r.map { |c| c.to_s.rjust(2, '0') }
+  end
 end
 
 get '/' do
