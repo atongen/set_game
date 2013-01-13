@@ -139,7 +139,7 @@ module SetGame
               end
             end
           when 'create_message'
-            message(player.id, data["from_name"], data["from_email"], data[:msg])
+            message(player.id, data["from_name"], data["from_email"], data["msg"])
           when 'create_invite'
             invite(data["to_email"], data["from_name"], data["msg"])
           else

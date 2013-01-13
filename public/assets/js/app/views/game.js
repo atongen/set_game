@@ -5,7 +5,9 @@ define([
     'lib/EventBus',
     'lib/Modal',
     'app/models/invite',
-    'text!app/templates/invite.html'
+    'app/models/message',
+    'text!app/templates/invite.html',
+    'text!app/templates/message.html'
 ],
 
 function(
@@ -15,14 +17,17 @@ function(
     EventBus,
     Modal,
     Invite,
-    invite_tpl
+    Message,
+    invite_tpl,
+    message_tpl
 ) {
 
     return Backbone.View.extend({
 
         events: {
             'click #game-btn': 'trigger_game_name_modal',
-            'click #invite-btn': 'trigger_invite_modal'
+            'click #invite-btn': 'trigger_invite_modal',
+            'click #message-btn': 'trigger_message_modal'
         },
 
         initialize: function(options) {
@@ -52,6 +57,19 @@ function(
                 context: this,
                 submit: function(content) {
                     this.send_invite(content);
+                }
+            });
+
+            /**
+             * Setup message modal
+             */
+            this.message_modal = new Modal({
+                id: 'message-modal',
+                title: 'Send us a Message',
+                body: _.template(message_tpl, {}),
+                context: this,
+                submit: function(content) {
+                    this.send_message(content);
                 }
             });
 
@@ -147,6 +165,23 @@ function(
                 invt.set({ to_email: to_email, from_name: from_name, msg: msg });
                 invt.save();
                 this.invite_modal.close();
+            }
+        },
+
+        trigger_message_modal: function(e) {
+            e.preventDefault();
+            this.message_modal.render();
+        },
+
+        send_message: function(content) {
+            var from_email = $.trim(content.find('input#from-email-field').val());
+            var from_name = $.trim(content.find('input#from-name-field').val());
+            var msg = $.trim(content.find('textarea#msg-field').val());
+            if (from_email != "" && from_name != "" && msg != "") {
+                var message = new Message();
+                message.set({ from_email: from_email, from_name: from_name, msg: msg });
+                message.save();
+                this.message_modal.close();
             }
         },
 

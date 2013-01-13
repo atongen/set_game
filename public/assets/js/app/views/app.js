@@ -45,7 +45,7 @@ function(
              * Setup game view
              */
             new GameView({
-                el: '#game',
+                el: 'body',
                 model: this.game,
                 player: this.player
             });

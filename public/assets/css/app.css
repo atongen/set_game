@@ -59,7 +59,7 @@ ul.cards {
 ul.cards li {
     list-style-type: none;
     float: left;
-    padding: 0px;
+    padding-right: 71px;
 }
 
 .cards span {

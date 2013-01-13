@@ -17,15 +17,14 @@
     <div class="row">
       <div class="span9">
         <ul class="cards">
-        <%# random_card_numbers(3).each do |c| %>
-          <% %w{ 00 40 80 }.each do |c| %>
+        <% random_card_numbers(3).each do |c| %>
           <li><span class="card-<%= c %>">Card <%= c %></span></li>
         <% end %>
         </ul>
         <div style="clear: left"></div>
         <p>From <a href="http://en.wikipedia.org/wiki/Set_(game)">wikipedia</a>:</p>
         <blockquote>
-          <p><em>Set</em> is a real-time card game designed by Marsha Falco in 1974 and published by
+          <p><em><strong>Set</strong></em> is a real-time card game designed by Marsha Falco in 1974 and published by
           Set Enterprises in 1991. The deck consists of 81 cards varying in four features:
           number (one, two, or three); symbol (diamond, squiggle, oval); shading (solid,
           striped, or open); and color (red, green, or purple). Each possible combination

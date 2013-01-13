@@ -27,7 +27,7 @@ module SetGame
         send_email(
           CONFIG["my_email"],
           "[SET GAME] Message",
-          "\"#{from_name}\" <#{from_email}> says:\n#{msg}\n\nGame ID: #{game_id}\nPlayer ID: #{player_id}")
+          "\"#{from_name}\" <#{from_email}> says:\n\n#{msg}\n\nGame ID: #{game_id}\nPlayer ID: #{player_id}")
       end
     end
 
