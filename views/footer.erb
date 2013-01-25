@@ -9,10 +9,11 @@
     If you like it, you should buy it from them!</p>
   </div>
   <div class="span4">
-    <p>Geek out on the code on <a href="#" target="_blank">github</a>.</p>
     <% if @game %>
       <p>Questions? Comments? Found a bug?<br /><a href="#" id="message-btn">Send us a message</a>.</p>
     <% end %>
+    <p>Geek out on the code on <a href="#" target="_blank">github</a>.</p>
+    <div class="fb-like" data-href="<%= CONFIG['url'] %>" data-send="false" data-width="450" data-show-faces="false" data-font="arial"></div>
   </div>
   <div class="span4">
     <p>Check out our unofficial sponsors:</p>

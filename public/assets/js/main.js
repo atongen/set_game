@@ -43,7 +43,20 @@ function (
     AppView
 ) {
 
+    var load_fb = function() {
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    }
+
     domReady(function () {
+
+        load_fb();
+
         var game_id = $('body').data('game-id');
         if (game_id) {
             var player_id = $('body').data('player-id');
@@ -53,4 +66,5 @@ function (
             });
         }
     });
+
 });

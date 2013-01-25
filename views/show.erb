@@ -1,62 +1,60 @@
-<body data-view="game" data-game-id="<%= @game.id %>" data-player-id="<%= @player.id %>">
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <span class="brand">Set Game</span>
-        <div class="nav-collapse collapse">
-          <p id="player" class="navbar-text pull-right">
-          Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
-          </p>
-          <ul id="game" class="nav">
-            <li><a id="game-btn" class="game-name" href="#"><%= @game.name.value %></a></li>
-            <li class="navbar-text">Password: <%= @game.password.value %></li>
-            <li><a id="invite-btn" class="invite" href="#">Invite a friend!</a></li>
-          </ul>
-        </div>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <span class="brand">Set Game</span>
+      <div class="nav-collapse collapse">
+        <p id="player" class="navbar-text pull-right">
+        Welcome <a href="#" id="player-btn"><strong class="player-name"><%= get_player.name.value %></strong></a>
+        </p>
+        <ul id="game" class="nav">
+          <li><a id="game-btn" class="game-name" href="#"><%= @game.name.value %></a></li>
+          <li class="navbar-text">Password: <%= @game.password.value %></li>
+          <li><a id="invite-btn" class="invite" href="#">Invite a friend!</a></li>
+        </ul>
       </div>
     </div>
   </div>
-  <div class="container">
-    <div class="row">
-      <div class="span3">
-        <div id="comments">
-          <div class="well">
-            <ul class="comment-list"></ul>
-          </div>
-          <div class="input-append">
-            <input class="span2" id="comment" type="text">
-            <button class="btn" id="comment-btn" type="button">Say!</button>
-          </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="span3">
+      <div id="comments">
+        <div class="well">
+          <ul class="comment-list"></ul>
         </div>
-        <div id="stats">
-          <dl class="stat-list dl-horizontal">
-            <dt>Sets on Board</dt>
-            <dd>
-            <span class="badge badge-inverse sets-on-board">
-              <%= @game.sets_on_board %>
-            </span>
-            </dd>
-            <dt>Cards Remaining</dt>
-            <dd>
-            <span class="badge badge-inverse cards-remaining">
-              <%= @game.cards_remaining %>
-            </span>
-            </dd>
-          </dl>
+        <div class="input-append">
+          <input class="span2" id="comment" type="text">
+          <button class="btn" id="comment-btn" type="button">Say!</button>
         </div>
-        <div id="status-btn"></div>
-        <div id="score-box"></div>
       </div>
-      <div class="span9">
-        <%= erb :flash %>
-        <div class="hero-unit">
-          <canvas id="board" width="648" height="756">
-          <p>Oops, your browser doesn't support the canvas element. Please upgrade to Chrome.</p>
-          </canvas>
-        </div>
+      <div id="stats">
+        <dl class="stat-list dl-horizontal">
+          <dt>Sets on Board</dt>
+          <dd>
+          <span class="badge badge-inverse sets-on-board">
+            <%= @game.sets_on_board %>
+          </span>
+          </dd>
+          <dt>Cards Remaining</dt>
+          <dd>
+          <span class="badge badge-inverse cards-remaining">
+            <%= @game.cards_remaining %>
+          </span>
+          </dd>
+        </dl>
+      </div>
+      <div id="status-btn"></div>
+      <div id="score-box"></div>
+    </div>
+    <div class="span9">
+      <%= erb :flash %>
+      <div class="hero-unit">
+        <canvas id="board" width="648" height="756">
+        <p>Oops, your browser doesn't support the canvas element. Please upgrade to Chrome.</p>
+        </canvas>
       </div>
     </div>
-    <%= erb :footer %>
   </div>
-  <div id="modal"></div>
-</body>
+  <%= erb :footer %>
+</div>
+<div id="modal"></div>
