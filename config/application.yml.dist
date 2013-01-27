@@ -1,0 +1,28 @@
+development: &default
+  URL: http://localhost:3000
+  MY_EMAIL: developer@example.com
+  FB_ADMINS:
+  GA_TRACKER:
+  MAX_GAMES: 100
+  MAX_PLAYERS_PER_GAME: 6
+  COMPILED: false
+  REDIS_HOST: 127.0.0.1
+  REDIS_PORT: 6379
+  REDIS_DATABASE: 0
+  REDIS_DRIVER:
+  REDIS_SIZE:
+  REDIS_NAMESPACE:
+  SMTP_ADDRESS: smtp.gmail.com
+  SMTP_PORT: 587
+  SMTP_ENABLE_STARTTLS_AUTO: true,
+  SMTP_USER_NAME: test@example.com
+  SMTP_PASSWORD: h@ckm3
+  SMTP_AUTHENTICATION: plain
+  SMTP_DOMAIN: gmail.com
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  COMPILED: true

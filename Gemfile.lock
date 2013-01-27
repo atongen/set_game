@@ -1,3 +1,8 @@
+PATH
+  remote: vendor/gems/figaro
+  specs:
+    figaro (0.5.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -72,6 +77,7 @@ DEPENDENCIES
   active_support
   celluloid
   connection_pool
+  figaro!
   i18n
   json
   minitest

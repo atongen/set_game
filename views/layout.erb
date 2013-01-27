@@ -9,15 +9,20 @@
 
     <meta property="og:title" content="Set Game"/>
     <meta property="og:type" content="game"/>
-    <meta property="og:url" content="<%= CONFIG['url'] %>"/>
-    <meta property="og:image" content="<%= CONFIG['url'] %>/assets/images/set.png"/>
+    <meta property="og:url" content="<%= ENV['URL'] %>"/>
+    <meta property="og:image" content="<%= ENV['URL'] %>/assets/images/set.png"/>
     <meta property="og:site_name" content="Set Game"/>
-    <meta property="fb:admins" content="<%= CONFIG['fb_admins'] %>"/>
     <meta property="og:description" content="HTML5 implementation of the Set Game from Set Enterprises."/>
+    <% if ENV['FB_ADMINS'].present? %>
+    <meta property="fb:admins" content="<%= ENV['FB_ADMINS'] %>"/>
+    <% end %>
+    <% if ENV['GA_TRACKER'].present? %>
+    <meta property="ga_tracker" content="<%= ENV['GA_TRACKER'] %>"/>
+    <% end %>
 
-    <% if !!CONFIG['compiled'] %>
+    <% if ENV['COMPILED'] == 'true' %>
       <link type="text/css" rel="stylesheet" href="/assets/css/bootstrap.css">
-      <link type="text/css" rel="stylesheet" href="/assets/css/app.css">
+      <link type="text/css" rel="stylesheet" href="/assets/css/app-built.css">
       <script data-main="/assets/js/main-built" src="/assets/js/require.js"></script>
     <% else %>
       <link type="text/css" rel="stylesheet" href="/assets/css/bootstrap.css">

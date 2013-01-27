@@ -7,11 +7,11 @@ module SetGame
   class RedisConnection
     def self.create(options = {})
       options = {} unless options.present?
-      if %w{ host port database }.all? { |key| options[key].present? }
-        url = "redis://#{options['host']}:#{options['port']}/#{options['database']}"
-      else
-        url = 'redis://localhost:6379/0'
-      end
+      options['host'] = 'localhost' unless options['host']
+      options['port'] = 6379 unless options['port']
+      options['database'] = 0 unless options['database']
+      url = "redis://#{options['host']}:#{options['port']}/#{options['database']}"
+
       driver = options['driver'] || 'ruby'
       # need a connection for Fetcher and Retry
       size = options[:size] || 4

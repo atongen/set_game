@@ -25,7 +25,7 @@ module SetGame
       msg = msg.to_s.strip
       if valid_email?(from_email) && from_name.length < MAX_SHORT && msg.length < MAX_LONG
         send_email(
-          CONFIG["my_email"],
+          ENV['MY_EMAIL'],
           "[SET GAME] Message",
           "\"#{from_name}\" <#{from_email}> says:\n\n#{msg}\n\nGame ID: #{game_id}\nPlayer ID: #{player_id}")
       end
@@ -36,11 +36,19 @@ module SetGame
     def send_email(to, subject, body)
       mail = {
         :to => to,
-        :from => CONFIG["smtp"]["user_name"],
+        :from => ENV['SMTP_USER_NAME'],
         :subject => subject,
         :body => body,
         :via => :smtp,
-        :via_options => CONFIG["smtp"].symbolize_keys
+        :via_options => {
+          :address              => ENV['SMTP_ADDRESS'],
+          :port                 => ENV['SMTP_PORT'],
+          :enable_starttls_auto => ENV['SMTP_ENABLE_STARTTLS_AUTO'],
+          :user_name            => ENV['SMTP_USER_NAME'],
+          :password             => ENV['SMTP_PASSWORD'],
+          :authentication       => ENV['SMTP_AUTHENTICATION'],
+          :domain               => ENV['SMTP_DOMAIN']
+        }
       }
       Pony.mail(mail)
     end
@@ -49,7 +57,7 @@ module SetGame
       game = Game.find(game_id)
       body = <<EOF
 #{from_name} has invited you to play the Set Game.
-To join, go here: #{CONFIG['url']}/games/#{game.id}
+To join, go here: #{ENV['URL']}/games/#{game.id}
 The password is #{game.password.value}
 EOF
       if msg.present?

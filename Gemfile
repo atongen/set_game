@@ -15,9 +15,11 @@ gem 'active_support'
 gem 'i18n'
 gem 'pony'
 gem 'rack-flash3'
+gem 'figaro', :path => 'vendor/gems/figaro'
 
 group :assets do
   gem 'rmagick', :require => 'Magick'
+  gem 'yui-compressor'
 end
 
 group :test do

@@ -34,12 +34,14 @@ require.config({
 require([
     'jquery',
     'domReady',
+    'lib/Ga',
     'app/views/app'
 ],
 
 function (
     $,
     domReady,
+    Ga,
     AppView
 ) {
 
@@ -54,7 +56,7 @@ function (
     }
 
     domReady(function () {
-
+        Ga.init();
         load_fb();
 
         var game_id = $('body').data('game-id');

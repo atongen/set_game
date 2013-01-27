@@ -81,7 +81,7 @@ end
 
 post '/games' do
   clean_up
-  if GAMES.length < CONFIG['max_games']
+  if GAMES.length < ENV['MAX_GAMES'].to_i
     game = SetGame::Game.new
     GAMES[game.id] = game
     player = get_player
@@ -112,7 +112,7 @@ get '/games/:id/ws' do
   if request.websocket? && (game = get_game) && (player = get_player)
     request.websocket do |ws|
       ws.onopen do
-        if game.player_ids.include?(player.id) && game.players_by_ws.length < CONFIG['max_players_per_game']
+        if game.player_ids.include?(player.id) && game.players_by_ws.length < ENV['MAX_PLAYERS_PER_GAME'].to_i
           player.add_game(ws, game)
           game.add_player(ws, player)
         end
@@ -149,7 +149,7 @@ post '/games/:id/login' do
   if (@game = get_game) && (@player = get_player)
     if @game.password.value == params[:password]
       @game.player_ids << @player.id
-      if @game.players_by_ws.length < CONFIG['max_players_per_game']
+      if @game.players_by_ws.length < ENV['MAX_PLAYERS_PER_GAME'].to_i
         redirect to("/games/#{@game.id}")
       else
         flash[:notice] = "There are too many players in that game already!"

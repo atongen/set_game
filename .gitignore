@@ -1,7 +1,8 @@
-/config/set_game.yml
+/config/application.yml
 /public/assets/js/main-built.js
-/public/assets/js/app-built.css
+/public/assets/css/app-built.css
 /tmp
 /work/gen
 /doc
 /.yardoc
+/vendor/gems
