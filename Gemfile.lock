@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/atongen/figaro.git
-  revision: b24ccdbed13b02cbee292d13adf5e6e976c5b096
+  revision: cad15e242c533759739620ff96cbb13adfa2b2d4
   specs:
     figaro (0.5.3)
 
