@@ -15,7 +15,7 @@ gem 'active_support'
 gem 'i18n'
 gem 'pony'
 gem 'rack-flash3'
-gem 'figaro', :path => 'vendor/gems/figaro'
+gem 'figaro', :git => 'https://github.com/atongen/figaro.git'
 
 group :assets do
   gem 'rmagick', :require => 'Magick'

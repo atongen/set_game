@@ -1,4 +1,6 @@
 /config/application.yml
+/config/deploy/*
+!/config/deploy/template.rb
 /public/assets/js/main-built.js
 /public/assets/css/app-built.css
 /tmp

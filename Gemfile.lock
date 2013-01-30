@@ -1,5 +1,6 @@
-PATH
-  remote: vendor/gems/figaro
+GIT
+  remote: https://github.com/atongen/figaro.git
+  revision: b24ccdbed13b02cbee292d13adf5e6e976c5b096
   specs:
     figaro (0.5.3)
 
