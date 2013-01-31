@@ -1,7 +1,7 @@
 require 'fileutils'
 require 'pathname'
-require 'rake/testtask'
-require 'yard'
+#require 'rake/testtask'
+#require 'yard'
 
 SET_GAME_ROOT = Pathname.new(File.expand_path('..', __FILE__))
 
@@ -58,13 +58,13 @@ namespace :assets do
   task :precompile => [:compile_css, :compile_js]
 end
 
-Rake::TestTask.new(:spec) do |t|
-  t.libs << 'lib'
-  t.libs << 'spec'
-  t.pattern = 'spec/**/*_spec.rb'
-  t.verbose = true
-end
+#Rake::TestTask.new(:spec) do |t|
+#  t.libs << 'lib'
+#  t.libs << 'spec'
+#  t.pattern = 'spec/**/*_spec.rb'
+#  t.verbose = true
+#end
 
-YARD::Rake::YardocTask.new do |t|
-  t.files = ['lib/**/*.rb']
-end
+#YARD::Rake::YardocTask.new do |t|
+#  t.files = ['lib/**/*.rb']
+#end
