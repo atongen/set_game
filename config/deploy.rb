@@ -35,16 +35,24 @@ namespace :deploy do
   #  default
   #end
 
+  task :create_symlink do
+    # do nothing!
+  end
+
+  task :migrate do
+    # do nothing!
+  end
+
   task :start do
-    sudo "cd #{current_path} && #{thin_command} #{thin_config} start"
+    run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} start"
   end
 
   task :stop do
-    sudo "cd #{current_path} && #{thin_command} #{thin_config} stop"
+    run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} stop"
   end
 
   task :restart do
-    sudo "cd #{current_path} && #{thin_command} #{thin_config} -O restart"
+    run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} -O restart"
   end
 
   namespace :assets do
