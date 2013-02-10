@@ -17,7 +17,7 @@
     <meta property="fb:admins" content="<%= ENV['FB_ADMINS'] %>"/>
     <% end %>
     <% if ENV['GA_TRACKER'].present? %>
-    <meta property="ga_tracker" content="<%= ENV['GA_TRACKER'] %>"/>
+    <meta name="ga_tracker" content="<%= ENV['GA_TRACKER'] %>"/>
     <% end %>
 
     <% if ENV['COMPILED'] == 'true' %>
