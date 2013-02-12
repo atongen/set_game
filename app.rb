@@ -11,8 +11,9 @@ require 'sinatra-websocket'
 require 'rack-flash'
 
 set :server, 'thin'
-enable :sessions
-set :protection, :except => :session_hijacking
+use Rack::Session::Cookie, :key => 'set_game.session',
+                           :expire_after => 31536000, # one year
+                           :secret => ENV['SESSION_SECRET']
 use Rack::Flash, :sweep => true
 
 helpers do
