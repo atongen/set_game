@@ -26,7 +26,6 @@ helpers do
       end
     else
       player = SetGame::Player.new
-      SetGame::Stats.increment_num_players
       session[:player_id] = player.id
       PLAYERS[player.id] = player
     end
@@ -72,6 +71,14 @@ helpers do
       r |= [rand(81)]
     end
     r.map { |c| c.to_s.rjust(2, '0') }
+  end
+
+  def get_player_games
+    if player = get_player
+      GAMES.values.select { |g| g.player_ids.include?(player.id) }
+    else
+      []
+    end
   end
 end
 

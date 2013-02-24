@@ -15,7 +15,7 @@ development: &default
   REDIS_NAMESPACE:
   SMTP_ADDRESS: smtp.gmail.com
   SMTP_PORT: 587
-  SMTP_ENABLE_STARTTLS_AUTO: true,
+  SMTP_ENABLE_STARTTLS_AUTO: true
   SMTP_USER_NAME: test@example.com
   SMTP_PASSWORD: h@ckm3
   SMTP_AUTHENTICATION: plain

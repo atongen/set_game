@@ -48,11 +48,14 @@ namespace :deploy do
   end
 
   task :stop do
-    run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} stop"
+    #run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} stop"
+    run "cd #{current_path} && PID=`cat tmp/pids/thin.pid`; [ -z \"$PID\" ] || #{sudo} kill -9 $PID"
   end
 
   task :restart do
-    run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} -O restart"
+    #run "cd #{current_path} && #{sudo} #{thin_command} #{thin_config} -O restart"
+    stop
+    start
   end
 
   namespace :assets do
@@ -69,6 +72,7 @@ set :normal_symlinks, %w(
 )
 
 set :weird_symlinks, {
+  "pids" => "tmp/pids"
 }
 
 namespace :symlinks do

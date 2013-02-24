@@ -41,6 +41,15 @@
         <dt>Current number games</dt>
         <dd><%= GAMES.length %></dd>
       </p>
+      <% player_games = get_player_games
+      if player_games.present? %>
+        <h3>Your Games</h3>
+        <ul class="unstyled">
+          <% player_games.each do |pgame| %>
+          <li><a href="/games/<%= pgame.id %>"><%= pgame.name.value %></a></li>
+          <% end %>
+        </ul>
+      <% end %>
     </div>
   </div>
   <%= erb :footer %>
