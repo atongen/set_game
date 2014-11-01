@@ -18,7 +18,7 @@ gem 'figaro', :git => 'https://github.com/atongen/figaro.git'
 
 group :assets do
   gem 'rmagick', :require => 'Magick'
-  gem 'yui-compressor'
+  gem 'sass'
 end
 
 group :test do

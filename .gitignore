@@ -4,6 +4,7 @@
 !/config/deploy/template.rb
 /public/assets/js/main-built.js
 /public/assets/css/app-built.css
+/public/assets/css/app-cat.css
 /tmp
 /log
 /work/gen

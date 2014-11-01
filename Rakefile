@@ -34,24 +34,18 @@ namespace :assets do
 
   desc "Compile CSS"
   task :compile_css => :clean_css do
-    require 'yui/compressor'
-    require 'stringio'
+    require 'sass'
 
     css = %w{
       bootstrap.css
       app.css
-    }
+    }.map { |f| SET_GAME_ROOT.join('public/assets/css', f) }
 
-    compressor = YUI::CssCompressor.new
-    src = ""
-    StringIO.open(src, 'w') do |io|
-      css.each do |f|
-        io.puts File.read(SET_GAME_ROOT.join('public', 'assets', 'css', f))
-      end
-    end
-    File.open(SET_GAME_ROOT.join('public', 'assets', 'css', 'app-built.css'), 'w') do |dst|
-      dst << compressor.compress(src)
-    end
+    cat = SET_GAME_ROOT.join('public/assets/css/app-cat.css')
+    `cat #{css.join(' ')} > #{cat}`
+
+    built = SET_GAME_ROOT.join('public/assets/css/app-built.css')
+    `sass -t compressed #{cat} #{built}`
   end
 
   desc "Precompile Assets"
