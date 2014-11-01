@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd /home/app
+exec 2>&1
+exec chpst -u app:app bundle exec thin -e production start >>/var/log/thin.log 2>&1
