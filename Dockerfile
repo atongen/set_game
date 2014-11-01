@@ -9,9 +9,6 @@ ENV HOME /root
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
 
-RUN apt-get update -qq
-RUN apt-get -qy install openjdk-7-jdk
-
 ADD . /home/app
 WORKDIR /home/app
 RUN chown -R app:app /home/app
