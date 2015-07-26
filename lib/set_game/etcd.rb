@@ -67,7 +67,7 @@ module SetGame
         opts[:use_ssl] = true
         opts[:ca_file] = ENV['ETCD_CA_FILE']
         opts[:ssl_cert] = OpenSSL::X509::Certificate.new(File.read(ENV['ETCD_SSL_CERT']))
-        opts[:ssl_key] = OpenSSL::PKey::RSA.new(ENV['ETCD_SSL_KEY'])
+        opts[:ssl_key] = OpenSSL::PKey::RSA.new(File.read(ENV['ETCD_SSL_KEY']))
       end
 
       opts
