@@ -7,14 +7,6 @@ task :environment do
   require File.expand_path('../config/environment', __FILE__)
 end
 
-task :write_etcd_config => :environment do
-  if SetGame::Etcd.config_valid?
-    SetGame::Etcd.write
-  else
-    puts 'Missing required environment variables'
-  end
-end
-
 namespace :assets do
   desc "Clean JS"
   task :clean_js => :environment do

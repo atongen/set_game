@@ -29,7 +29,3 @@ group :development do
   gem 'yard'
   gem 'redcarpet'
 end
-
-group :production do
-  gem 'etcd'
-end
