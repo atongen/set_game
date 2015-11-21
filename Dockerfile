@@ -1,24 +1,27 @@
-# See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
-# a list of version numbers.
-FROM phusion/passenger-ruby19:0.9.14
-MAINTAINER Andrew Tongen "atongen@gmail.com"
+FROM alpine:3.2
+MAINTAINER Andrew Tongen atongen@gmail.com
 
-# Set correct environment variables.
-ENV HOME /root
+RUN apk add --update \
+  ca-certificates \
+  build-base \
+  ruby \
+  ruby-bundler \
+  ruby-dev \
+  git \
+  nodejs \
+  openssl \
+  openssl-dev && \
+  rm -fr /usr/share/ri && \
+  rm -fr /var/cache/apk/*
 
-# Use baseimage-docker's init process.
-CMD ["/sbin/my_init"]
+COPY config/docker /
+COPY . /home/app
 
-ADD . /home/app
+ENV HOME /home/app
 WORKDIR /home/app
-RUN chown -R app:app /home/app
-RUN sudo -u app bundle install --deployment --without test development doc
-RUN sudo -u app RAILS_ENV=production bundle exec rake assets:precompile
-
-RUN mkdir /etc/service/app
-ADD bin/run /etc/service/app/run
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN bundle install --deployment --without test development doc
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 EXPOSE 3000
+
+ENTRYPOINT ["bundle", "exec", "thin", "-e", "production", "start"]

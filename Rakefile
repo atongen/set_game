@@ -3,16 +3,13 @@ require 'pathname'
 #require 'rake/testtask'
 #require 'yard'
 
-SET_GAME_ROOT = Pathname.new(File.expand_path('..', __FILE__))
-
 task :environment do
-  require SET_GAME_ROOT.join("lib", "set_game")
+  require File.expand_path('../config/environment', __FILE__)
 end
 
 namespace :assets do
-
   desc "Clean JS"
-  task :clean_js do
+  task :clean_js => :environment do
     built_js = SET_GAME_ROOT.join('public', 'assets', 'js', 'main-built.js')
     FileUtils.rm(built_js) if File.file?(built_js)
   end
@@ -27,7 +24,7 @@ namespace :assets do
   end
 
   desc "Clean CSS"
-  task :clean_css do
+  task :clean_css => :environment do
     built_css = SET_GAME_ROOT.join('public', 'assets', 'css', 'app-built.css')
     FileUtils.rm(built_css) if File.file?(built_css)
   end
@@ -51,14 +48,3 @@ namespace :assets do
   desc "Precompile Assets"
   task :precompile => [:compile_css, :compile_js]
 end
-
-#Rake::TestTask.new(:spec) do |t|
-#  t.libs << 'lib'
-#  t.libs << 'spec'
-#  t.pattern = 'spec/**/*_spec.rb'
-#  t.verbose = true
-#end
-
-#YARD::Rake::YardocTask.new do |t|
-#  t.files = ['lib/**/*.rb']
-#end
