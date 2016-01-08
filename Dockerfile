@@ -1,4 +1,4 @@
-FROM alpine:3.2
+FROM alpine:3.3
 MAINTAINER Andrew Tongen atongen@gmail.com
 
 RUN apk add --update \
@@ -6,6 +6,7 @@ RUN apk add --update \
   build-base \
   ruby \
   ruby-bundler \
+  ruby-io-console \
   ruby-dev \
   git \
   nodejs \
