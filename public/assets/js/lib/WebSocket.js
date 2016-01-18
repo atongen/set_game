@@ -15,8 +15,16 @@ define([
   ) {
 
       var my = {};
-      var path = 'ws://' + window.location.host + window.location.pathname + '/ws';
+      var protocol;
       var connection;
+
+      if (location.protocol == "https:") {
+          protocol = "wss:";
+      } else {
+          protocol = "ws:";
+      }
+
+      var path = protocol + '//' + window.location.host + window.location.pathname + '/ws';
 
       /**
        * Initialize the websocket connection
