@@ -6,6 +6,7 @@
 /public/assets/js/main-built.js
 /public/assets/css/app-built.css
 /public/assets/css/app-cat.css
+/public/assets/*/*.map
 /tmp
 /log
 /work/gen
@@ -13,3 +14,5 @@
 /.yardoc
 /vendor/gems
 /.bundle
+/.sass-cache
+

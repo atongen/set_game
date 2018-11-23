@@ -1,5 +1,4 @@
-FROM alpine:3.3
-MAINTAINER Andrew Tongen atongen@gmail.com
+FROM ruby:2.5.3-alpine3.8
 
 RUN apk add --update \
   ca-certificates \
